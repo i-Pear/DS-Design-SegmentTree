@@ -1,6 +1,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+#define 面 main
+
 class Segment3D{
 public:
     int xL,xR,yL,yR,zL,zR;
@@ -18,19 +20,28 @@ public:
 template<typename T>
 class SegmentTree3DNode{
 public:
-    int xLeft,xRight;
-    int yLeft,yRight;
-    int zLeft,zRight;
-    int xMid,yMid,zMid;
+    Segment3D mySegment;
+    int lazy;
+    int xMid,yMid,zMid; // Mid点处算作L范围
     SegmentTree3DNode*son[8];
 
     SegmentTree3DNode(int xL,int xR,int yL,int yR,int zL,int zR) :
-            xLeft(xL),xRight(xR),
-            yLeft(yL),yRight(yR),
-            zLeft(zL),zRight(zR),
+            mySegment(xL,xR,yL,yR,zL,zR),
             xMid(xL+xR/2),yMid(yL+yR/2),zMid(zL+zR/2){}
 
-    update(int xL,int xR,int yL,int yR,int zL,int zR)
+    void segmentModify(Segment3D segment,int diff){
+        if(segment==mySegment){
+            lazy+=diff;
+            return;
+        }
+        bool xLUsed=(segment.xL<=xMid);
+        bool xRUsed=(segment.xR>xMid);
+        bool yLUsed=(segment.yL<=yMid);
+        bool yRUsed=(segment.yR>yMid);
+        bool zLUsed=(segment.zL<=zMid);
+        bool zRUsed=(segment.zR>zMid);
+
+    }
 };
 
 template<typename T>
@@ -46,7 +57,7 @@ public:
 };
 
 
-int main(){
-    cout<<"Hello, World!"<<std::endl;
+int 面(){
+    cout<<"Hello, World!"<<endl;
     return 0;
 }
