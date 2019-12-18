@@ -65,17 +65,19 @@ public:
 
     Segment3DTreeNode(int xL,int xR,int yL,int yR,int zL,int zR) :mySegment(xL,xR,yL,yR,zL,zR){
         assert(!mySegment.empty());
-        if(mySegment.getArea()==1) return;
 
-        sum=0;
-        max=INT_MAX;
-        min=INT_MIN;
         cachedDiff=0;
         ifSet=false;
         cachedSet=0;
         xMid=(xL+xR/2);
         yMid=(yL+yR/2);
         zMid=(zL+zR/2);
+        sum=0;
+        extreme=ExtremeType(0,0);
+
+        if(mySegment.getArea()==1){
+            return;
+        }
 
         memset(son,0,sizeof(son));
         // 如果某维度区间大小只有1，则细分该维的L~Mid是无意义的
