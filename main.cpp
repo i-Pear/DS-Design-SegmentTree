@@ -289,10 +289,6 @@ public:
         return res;
     }
 
-    ExtremeType queryPointMin(int x,int y,int z){
-        return querySegmentMin(Segment3D(x,y,z));
-    }
-
     ExtremeType querySegmentMax(Segment3D segment){
 
         segment=segment.intersect(mySegment);
@@ -317,10 +313,7 @@ public:
         return res;
     }
 
-    ExtremeType queryPointMax(int x,int y,int z){
-        return querySegmentMax(Segment3D(x,y,z));
-    }
-
+    
 
     /* Ç¿ÖÆ¸³Öµ */
 
@@ -436,5 +429,5 @@ int main(){
     Segment3DTree t(4,4,4);
     t.modifyPoint(2,2,2,100);
     t.modifyPoint(3,3,2,50);
-    cout<<t.querySegmentSum(Segment3D(1,3,1,3,1,3));
+    cout<<t.querySegmentMin(Segment3D(1,4,1,4,1,3)).val;
 }
