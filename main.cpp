@@ -4,6 +4,7 @@ using namespace std;
 
 class Segment3D{
 public:
+
     int xL,xR,yL,yR,zL,zR;
     int area;
 
@@ -43,11 +44,14 @@ public:
 
 class ExtremeType{
 public:
+
     int index;
     int val;
 
     ExtremeType():ExtremeType(0,0){}
+
     ExtremeType(int v):ExtremeType(0,v){}
+
     ExtremeType(int i,int v):index(i),val(v){}
 
     ExtremeType& operator + (int v){
@@ -91,10 +95,12 @@ public:
     bool operator>(const ExtremeType &b) const{
         return val>b.val;
     }
+
 };
 
 class StaticsType{
 public:
+
     bool valid;
     ExtremeType min;
     ExtremeType max;
@@ -161,7 +167,7 @@ public:
         zMid=(zL+zR/2);
         statics=StaticsType(0,0,0);
 
-        if(mySegment.getVolume()==1){
+        if(mySegment.isLeaf()){
             return;
         }
 
@@ -319,15 +325,20 @@ public:
     /* 标记下传 */
 
     void pushDownSet(){
-
+        for(auto&i:son){
+            if(i){
+                i->cachedDiff=0;
+                i->ifSet=true;
+                i->cachedSet=cachedSet;
+            }
+        }
     }
 
     void pushDownDiff(){
         for(auto &i:son){
             if(i){
                 i->cachedDiff+=cachedDiff;
-                i.sum+=cachedDiff*i->mySegment.getVolume();
-                i->statics.max+=
+                i->statics.add(cachedDiff,i->mySegment.getVolume());
             }
         }
     }
@@ -339,7 +350,7 @@ public:
     int xLength;
     int yLength;
 
-    Segment3DTree(int xLength,int yLength,T**source){
+    Segment3DTree(int xLength,int yLength){
 
     }
 };
