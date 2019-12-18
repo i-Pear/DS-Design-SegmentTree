@@ -100,7 +100,7 @@ public:
         Segment3DTreeNode(segment.xL,segment.xR,segment.yL,segment.yR,segment.zL,segment.zR);
     }
 
-    ExtremeType modifySegment(Segment3D segment,int diff){
+    ExtremeType __modifySegment(Segment3D segment,int diff){
         if(segment.empty())return {};
         sum+=segment.getArea()*diff;
         if(segment==mySegment){
@@ -109,7 +109,7 @@ public:
         }else{
             for(auto &i : son){
                 if(i){
-                    auto re=i->modifySegment(segment.intersect(i->mySegment),diff);
+                    auto re=i->__modifySegment(segment.intersect(i->mySegment),diff);
                     extreme.update(re);
                 }
             }
@@ -117,24 +117,31 @@ public:
         
     }
 
+    void modifySegment(Segment3D segment,int diff){
+        __modifySegment(segment,diff);
+    }
+
     void modifyPoint(int x,int y,int z,int diff){
-        modifySegment(Segment3D(x,x,y,y,z,z),diff);
+        __modifySegment(Segment3D(x,x+1,y,y+1,z,z+1),diff);
     }
 
     int querySegmentSum(Segment3D segment){
         if(segment==mySegment){
             return sum;
         }
-        int sum=0;
+        int res=0;
         for(auto &i:son){
-            sum+=i->querySegmentSum(segment.intersect(i->mySegment));
+            if(i)
+                res+=i->querySegmentSum(segment.intersect(i->mySegment));
         }
-        return sum;
+        return res;
     }
 
     int queryPoint(int x,int y,int z){
-        return querySegmentSum(Segment3D(x,x,y,y,z,z));
+        return querySegmentSum(Segment3D(x,x+1,y,y+1,z,z+1));
     }
+
+
 
 };
 
