@@ -162,6 +162,9 @@ public:
 
     Segment3DTreeNode(int xL,int xR,int yL,int yR,int zL,int zR) : mySegment(xL,xR,yL,yR,zL,zR){
 
+        if(mySegment.empty()){
+            cout<<"Test";
+        }
         assert(!mySegment.empty());
 
         cachedDiff=0;
@@ -422,5 +425,6 @@ public:
 
 
 int main(){
-    cout<<"Hello World"<<endl;
+    Segment3DTree tree(10,10,10);
+
 }
