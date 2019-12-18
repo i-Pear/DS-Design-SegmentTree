@@ -144,14 +144,14 @@ class Segment3DTreeNode{
 protected:
 
     Segment3D mySegment;
-    int xMid,yMid,zMid; // Midµã´¦Ëã×÷L·¶Î§
+    int xMid,yMid,zMid; // Midç‚¹å¤„ç®—ä½œLèŒƒå›´
     Segment3DTreeNode*son[8];
     StaticsType statics;
     int cachedDiff;
     bool ifSet;
     int cachedSet;
 
-    /* Çø¼äĞŞ¸Ä */
+    /* åŒºé—´ä¿®æ”¹ */
 
     StaticsType &__modifySegment(Segment3D segment,int diff){
 
@@ -178,7 +178,7 @@ protected:
 
     }
 
-    /* Çø¼ä¸³Öµ */
+    /* åŒºé—´èµ‹å€¼ */
 
     StaticsType &__setSegment(Segment3D segment,int val){
 
@@ -207,7 +207,7 @@ protected:
         }
     }
 
-    /* ±ê¼ÇÏÂ´« */
+    /* æ ‡è®°ä¸‹ä¼  */
 
     void pushDownSet(){
         for(auto &i:son){
@@ -232,17 +232,17 @@ protected:
 
 public:
 
-    // °Ë²æÊ÷·ÇÂú£¬²Ù×÷Ê±×¢ÒâÅĞ¶Ï×ÓÊ÷´æÔÚĞÔ
+    // å…«å‰æ ‘éæ»¡ï¼Œæ“ä½œæ—¶æ³¨æ„åˆ¤æ–­å­æ ‘å­˜åœ¨æ€§
 
-    // ¶¨Òå²Ù×÷ÓÅÏÈ¼¶£ºset>modify
-    // ¼´½Úµã¼ÈÓĞcachedDiffÓÖÓĞcachedSetÊ±£¬ÏÈÖ´ĞĞset
-    // ÓĞsetÊ±¿É¸½¼Ódiff£¬µ«ÓĞdiffÊ±ÇëÇósetĞèÏÈÏÂ´«
-    // ÉÏ²ãsetÖ¸Áî¿ÉÊ¹ÏÂ²ãÊı¾İÎŞĞ§»¯
-    // sumÒªÇóÊµÊ±±£³Ö×îĞÂ£¬µ±ÇëÇóÏ¸·ÖÊ±ÏÂ´«±ê¼Ç
+    // å®šä¹‰æ“ä½œä¼˜å…ˆçº§ï¼šset>modify
+    // å³èŠ‚ç‚¹æ—¢æœ‰cachedDiffåˆæœ‰cachedSetæ—¶ï¼Œå…ˆæ‰§è¡Œset
+    // æœ‰setæ—¶å¯é™„åŠ diffï¼Œä½†æœ‰diffæ—¶è¯·æ±‚setéœ€å…ˆä¸‹ä¼ 
+    // ä¸Šå±‚setæŒ‡ä»¤å¯ä½¿ä¸‹å±‚æ•°æ®æ— æ•ˆåŒ–
+    // sumè¦æ±‚å®æ—¶ä¿æŒæœ€æ–°ï¼Œå½“è¯·æ±‚ç»†åˆ†æ—¶ä¸‹ä¼ æ ‡è®°
 
 
 
-    /* ¹¹Ôìº¯Êı */
+    /* æ„é€ å‡½æ•° */
 
     Segment3DTreeNode(int xL,int xR,int yL,int yR,int zL,int zR) : mySegment(xL,xR,yL,yR,zL,zR){
 
@@ -265,7 +265,7 @@ public:
         }
 
         memset(son,0,sizeof(son));
-        // Èç¹ûÄ³Î¬¶ÈÇø¼ä´óĞ¡Ö»ÓĞ1£¬ÔòÏ¸·Ö¸ÃÎ¬µÄL~MidÊÇÎŞÒâÒåµÄ
+        // å¦‚æœæŸç»´åº¦åŒºé—´å¤§å°åªæœ‰1ï¼Œåˆ™ç»†åˆ†è¯¥ç»´çš„L~Midæ˜¯æ— æ„ä¹‰çš„
         if(xR-xL>1)
             son[0]=new Segment3DTreeNode(xL,xMid,yMid,yR,zMid,zR);
         son[1]=new Segment3DTreeNode(xMid,xR,yMid,yR,zMid,zR);
@@ -300,7 +300,7 @@ public:
 
 
 
-    /* Çø¼äĞŞ¸Ä */
+    /* åŒºé—´ä¿®æ”¹ */
 
     void modifySegment(Segment3D segment,int diff){
         __modifySegment(segment,diff);
@@ -312,7 +312,7 @@ public:
 
 
 
-    /* ²éÑ¯(µ¥µã/Çø¼ä)(Çø¼äºÍ/×î´óÖµ/×îĞ¡Öµ) */
+    /* æŸ¥è¯¢(å•ç‚¹/åŒºé—´)(åŒºé—´å’Œ/æœ€å¤§å€¼/æœ€å°å€¼) */
 
     int querySegmentSum(Segment3D segment){
 
@@ -385,7 +385,7 @@ public:
 
 
 
-    /* Ç¿ÖÆ¸³Öµ */
+    /* å¼ºåˆ¶èµ‹å€¼ */
 
     void setSegment(Segment3D segment,int val){
         __setSegment(segment,val);
@@ -396,7 +396,7 @@ public:
     } // Wrapper
 
 
-    /* Îö¹¹º¯Êı */
+    /* ææ„å‡½æ•° */
 
     ~Segment3DTreeNode(){
         for(auto&i:son){
@@ -467,7 +467,7 @@ private:
 
 public:
 
-    /* Çø¼äĞŞ¸Ä */
+    /* åŒºé—´ä¿®æ”¹ */
 
     StaticsType &__modifySegment(Segment3D segment,int diff,Segment3DPersistenceTreeNode** link){
 
@@ -505,7 +505,7 @@ public:
 
     }
 
-    /* Çø¼ä¸³Öµ */
+    /* åŒºé—´èµ‹å€¼ */
 
     StaticsType &__setSegment(Segment3D segment,int val,Segment3DPersistenceTreeNode** link){
 
