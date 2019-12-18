@@ -46,6 +46,10 @@ public:
         min=std::min(min,b.min);
         max=std::max(max,b.max);
     }
+    void update(int min,int max){
+        this->min=std::min(this->min,min);
+        this->max=std::max(this->max,max);
+    }
 };
 
 template<typename T>
@@ -59,9 +63,12 @@ public:
     int cachedDiff;
     bool ifSet;
     int cachedSet;
+
     // 定义操作优先级：set>modify
     // 即节点既有cachedDiff又有cachedSet时，先执行set
     // 有set时可附加diff，但有diff时请求set需先下传
+    // 上层set指令可使下层数据无效化
+    // sum要求实时保持最新，当请求细分时下传标记
 
     Segment3DTreeNode(int xL,int xR,int yL,int yR,int zL,int zR) :mySegment(xL,xR,yL,yR,zL,zR){
         assert(!mySegment.empty());
