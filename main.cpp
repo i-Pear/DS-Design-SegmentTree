@@ -19,7 +19,7 @@ public:
                 max(zL,b.zL),min(xR,b.zR)};
     }
 
-    int getArea() const{
+    int getVolume() const{
         return area;
     }
 
@@ -128,7 +128,6 @@ public:
 
 };
 
-template<typename T>
 class Segment3DTreeNode{
 public:
     Segment3D mySegment;
@@ -162,7 +161,7 @@ public:
         zMid=(zL+zR/2);
         statics=StaticsType(0,0,0);
 
-        if(mySegment.getArea()==1){
+        if(mySegment.getVolume()==1){
             return;
         }
 
@@ -185,9 +184,7 @@ public:
             son[7]=new Segment3DTreeNode(xL,xMid,yL,yMid,zL,zMid);
     }
 
-    explicit Segment3DTreeNode(Segment3D segment){
-        Segment3DTreeNode(segment.xL,segment.xR,segment.yL,segment.yR,segment.zL,segment.zR);
-    } // Wrapper
+    explicit Segment3DTreeNode(Segment3D segment):Segment3DTreeNode(segment.xL,segment.xR,segment.yL,segment.yR,segment.zL,segment.zR){} // Wrapper
 
     /* 区间修改 */
 
@@ -245,14 +242,14 @@ public:
         return querySegmentSum(Segment3D(x,y,z));
     } // Wrapper
 
-    int querySegmentMin(Segment3D segment){
+    ExtremeType querySegmentMin(Segment3D segment){
 
         segment=segment.intersect(mySegment);
 
         if(segment==mySegment){
             return statics.min;
         }
-        int res;
+        ExtremeType res;
         bool init=false;
         for(auto &i:son){
             if(i){
@@ -267,18 +264,18 @@ public:
         return res;
     }
 
-    int queryPointMin(int x,int y,int z){
+    ExtremeType queryPointMin(int x,int y,int z){
         return querySegmentMin(Segment3D(x,y,z));
     }
 
-    int querySegmentMax(Segment3D segment){
+    ExtremeType querySegmentMax(Segment3D segment){
 
         segment=segment.intersect(mySegment);
 
         if(segment==mySegment){
             return statics.max;
         }
-        int res;
+        ExtremeType res;
         bool init=false;
         for(auto &i:son){
             if(i){
@@ -293,13 +290,16 @@ public:
         return res;
     }
 
-    int queryPointMax(int x,int y,int z){
+    ExtremeType queryPointMax(int x,int y,int z){
         return querySegmentMax(Segment3D(x,y,z));
     }
 
     /* 强制赋值 */
 
     StaticsType& setSegment(Segment3D segment,int val){
+
+        segment=segment.intersect(mySegment);
+
         if(segment.empty())return statics;
 
         if(cachedDiff){
@@ -309,8 +309,8 @@ public:
         if(segment==mySegment){
             ifSet=true;
             cachedSet=val;
-            sum=mySegment.getArea()*val;
-            statics.update(val,val);
+            statics.max=statics.min=val;
+            statics.sum=val*mySegment.getVolume();
         }else{
 
         }
@@ -326,7 +326,7 @@ public:
         for(auto &i:son){
             if(i){
                 i->cachedDiff+=cachedDiff;
-                i.sum+=cachedDiff*i->mySegment.getArea();
+                i.sum+=cachedDiff*i->mySegment.getVolume();
                 i->statics.max+=
             }
         }
@@ -334,7 +334,6 @@ public:
 
 };
 
-template<typename T>
 class Segment3DTree{
 public:
     int xLength;
