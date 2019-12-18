@@ -140,7 +140,9 @@ public:
 
 
 class Segment3DTreeNode{
-public:
+
+private:
+
     Segment3D mySegment;
     int xMid,yMid,zMid; // Mid点处算作L范围
     Segment3DTreeNode*son[8];
@@ -148,6 +150,87 @@ public:
     int cachedDiff;
     bool ifSet;
     int cachedSet;
+
+    /* 区间修改 */
+
+    StaticsType &__modifySegment(Segment3D segment,int diff){
+
+        segment=segment.intersect(mySegment);
+
+        if(segment.empty())return statics;
+
+        if(segment==mySegment){
+            cachedDiff+=diff;
+            statics.sum+=diff;
+            statics.min+=diff;
+            statics.max+=diff;
+            return statics;
+        }else{
+            statics.clear();
+            for(auto &i : son){
+                if(i){
+                    auto re=i->__modifySegment(segment,diff);
+                    statics.update(re);
+                }
+            }
+            return statics;
+        }
+
+    }
+
+    /* 区间赋值 */
+
+    StaticsType &__setSegment(Segment3D segment,int val){
+
+        segment=segment.intersect(mySegment);
+
+        if(segment.empty())return statics;
+
+        if(segment==mySegment){
+            cachedDiff=0;
+            ifSet=true;
+            cachedSet=val;
+            statics.max=statics.min=val;
+            statics.sum=val*mySegment.getVolume();
+        }else{
+            if(cachedDiff){
+                pushDownDiff();
+            }
+            statics.clear();
+            for(auto &i:son){
+                if(i){
+                    auto re=i->__setSegment(segment,val);
+                    statics.update(re);
+                }
+            }
+            return statics;
+        }
+    }
+
+    /* 标记下传 */
+
+    void pushDownSet(){
+        for(auto &i:son){
+            if(i){
+                i->cachedDiff=0;
+                i->ifSet=true;
+                i->cachedSet=cachedSet;
+            }
+        }
+        ifSet=false;
+    }
+
+    void pushDownDiff(){
+        for(auto &i:son){
+            if(i){
+                i->cachedDiff+=cachedDiff;
+                i->statics.add(cachedDiff,i->mySegment.getVolume());
+            }
+        }
+        cachedDiff=0;
+    }
+
+public:
 
     // 八叉树非满，操作时注意判断子树存在性
 
@@ -206,31 +289,6 @@ public:
 
 
     /* 区间修改 */
-
-    StaticsType &__modifySegment(Segment3D segment,int diff){
-
-        segment=segment.intersect(mySegment);
-
-        if(segment.empty())return statics;
-
-        if(segment==mySegment){
-            cachedDiff+=diff;
-            statics.sum+=diff;
-            statics.min+=diff;
-            statics.max+=diff;
-            return statics;
-        }else{
-            statics.clear();
-            for(auto &i : son){
-                if(i){
-                    auto re=i->__modifySegment(segment,diff);
-                    statics.update(re);
-                }
-            }
-            return statics;
-        }
-
-    }
 
     void modifySegment(Segment3D segment,int diff){
         __modifySegment(segment,diff);
@@ -313,75 +371,24 @@ public:
         return res;
     }
 
-    
+
 
     /* 强制赋值 */
-
-    StaticsType &__setSegment(Segment3D segment,int val){
-
-        segment=segment.intersect(mySegment);
-
-        if(segment.empty())return statics;
-
-        if(segment==mySegment){
-            cachedDiff=0;
-            ifSet=true;
-            cachedSet=val;
-            statics.max=statics.min=val;
-            statics.sum=val*mySegment.getVolume();
-        }else{
-            if(cachedDiff){
-                pushDownDiff();
-            }
-            statics.clear();
-            for(auto &i:son){
-                if(i){
-                    auto re=i->__setSegment(segment,val);
-                    statics.update(re);
-                }
-            }
-            return statics;
-        }
-    }
 
     void setSegment(Segment3D segment,int val){
         __setSegment(segment,val);
     } // Wrapper
 
-
-
-    /* 标记下传 */
-
-    void pushDownSet(){
-        for(auto &i:son){
-            if(i){
-                i->cachedDiff=0;
-                i->ifSet=true;
-                i->cachedSet=cachedSet;
-            }
-        }
-        ifSet=false;
-    }
-
-    void pushDownDiff(){
-        for(auto &i:son){
-            if(i){
-                i->cachedDiff+=cachedDiff;
-                i->statics.add(cachedDiff,i->mySegment.getVolume());
-            }
-        }
-        cachedDiff=0;
-    }
-
 };
 
 
 class Segment3DTree{
+private:
+    Segment3DTreeNode head;
 public:
     int xLength;
     int yLength;
     int zLength;
-    Segment3DTreeNode head;
 
     Segment3DTree(int xLength,int yLength,int zLength) : xLength(xLength),yLength(yLength),zLength(zLength),
     head(Segment3D(0,xLength,0,yLength,0,zLength)){}
@@ -406,16 +413,8 @@ public:
         return head.querySegmentMin(segment);
     }
 
-    ExtremeType queryPointMin(int x,int y,int z){
-        return head.queryPointMin(x,y,z);
-    }
-
     ExtremeType querySegmentMax(Segment3D segment){
         return head.querySegmentMax(segment);
-    }
-
-    ExtremeType queryPointMax(int x,int y,int z){
-        return head.queryPointMax(x,y,z);
     }
 
     void setSegment(Segment3D segment,int val){
