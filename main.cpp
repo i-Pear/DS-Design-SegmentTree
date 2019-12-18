@@ -471,7 +471,7 @@ public:
             (*link)->__modifySegment(segment,diff,nullptr);
         }else{
             // shows that here is new node
-            
+            // so continue
         }
 
         if(segment==mySegment){
@@ -484,7 +484,7 @@ public:
             statics.clear();
             for(auto &i : son){
                 if(i){
-                    auto re=i->__modifySegment(segment,diff);
+                    auto re=i->__modifySegment(segment,diff,&i);
                     statics.update(re);
                 }
             }
@@ -495,13 +495,22 @@ public:
 
     /* Çø¼ä¸³Öµ */
 
-    StaticsType &__setSegment(Segment3D segment,int val){
+    StaticsType &__setSegment(Segment3D segment,int val,Segment3DPersistenceTreeNode** link){
 
         segment=segment.intersect(mySegment);
 
         if(segment.empty())return statics;
 
         // If passes here, it shows that modification must go through this node
+
+        if(link){
+            // shows that here's UDD node
+            (*link)=new Segment3DPersistenceTreeNode(*this);
+            (*link)->__setSegment(segment,val,nullptr);
+        }else{
+            // shows that here is new node
+            // so continue
+        }
 
         if(segment==mySegment){
             cachedDiff=0;
@@ -516,7 +525,7 @@ public:
             statics.clear();
             for(auto &i:son){
                 if(i){
-                    auto re=i->__setSegment(segment,val);
+                    auto re=i->__setSegment(segment,val,&i);
                     statics.update(re);
                 }
             }
@@ -524,17 +533,25 @@ public:
         }
     }
 
+
     void modifySegment(Segment3D segment,int diff){
-        __modifySegment(segment,diff);
+        __modifySegment(segment,diff,nullptr);
     } // Wrapper
 
     void setSegment(Segment3D segment,int val){
-        __setSegment(segment,val);
+        __setSegment(segment,val,nullptr);
     } // Wrapper
 
 };
 
+
 class Segment3DPersistenceTree:public Segment3DTree{
+
+public:
+
+    list<Segment3DPersistenceTreeNode> heads;
+
+    
 
 };
 
