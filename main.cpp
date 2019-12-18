@@ -153,6 +153,7 @@ public:
     // sum要求实时保持最新，当请求细分时下传标记
 
 
+
     /* 构造函数 */
 
     Segment3DTreeNode(int xL,int xR,int yL,int yR,int zL,int zR) : mySegment(xL,xR,yL,yR,zL,zR){
@@ -192,6 +193,8 @@ public:
 
     explicit Segment3DTreeNode(Segment3D segment):Segment3DTreeNode(segment.xL,segment.xR,segment.yL,segment.yR,segment.zL,segment.zR){} // Wrapper
 
+
+
     /* 区间修改 */
 
     StaticsType& __modifySegment(Segment3D segment,int diff){
@@ -226,6 +229,8 @@ public:
     void modifyPoint(int x,int y,int z,int diff){
         __modifySegment(Segment3D(x,y,z),diff);
     } // Wrapper
+
+
 
     /* 查询(单点/区间)(区间和/最大值/最小值) */
 
@@ -300,6 +305,8 @@ public:
         return querySegmentMax(Segment3D(x,y,z));
     }
 
+
+
     /* 强制赋值 */
 
     StaticsType& setSegment(Segment3D segment,int val){
@@ -322,6 +329,8 @@ public:
         }
     }
 
+
+
     /* 标记下传 */
 
     void pushDownSet(){
@@ -332,6 +341,7 @@ public:
                 i->cachedSet=cachedSet;
             }
         }
+        ifSet=false;
     }
 
     void pushDownDiff(){
@@ -341,6 +351,7 @@ public:
                 i->statics.add(cachedDiff,i->mySegment.getVolume());
             }
         }
+        cachedDiff=0;
     }
 
 };
