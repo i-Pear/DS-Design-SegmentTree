@@ -379,6 +379,17 @@ public:
         __setSegment(segment,val);
     } // Wrapper
 
+
+    /* Îö¹¹º¯Êý */
+
+    ~Segment3DTreeNode(){
+        for(auto&i:son){
+            if(i){
+                delete(i);
+            }
+        }
+    }
+
 };
 
 
