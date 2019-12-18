@@ -47,14 +47,15 @@ public:
 class ExtremeType{
 public:
 
+    bool valid;
     int index;
     int val;
 
-    ExtremeType() : ExtremeType(0,0){}
+    ExtremeType() : index(0),val(0),valid(false){}
 
     ExtremeType(int v) : ExtremeType(0,v){}
 
-    ExtremeType(int i,int v) : index(i),val(v){}
+    ExtremeType(int i,int v) : index(i),val(v),valid(true){}
 
     ExtremeType &operator+(int v){
         val+=v;
@@ -163,7 +164,8 @@ public:
     Segment3DTreeNode(int xL,int xR,int yL,int yR,int zL,int zR) : mySegment(xL,xR,yL,yR,zL,zR){
 
         //Test
-        cout<<"Creating X:"<<xL<<"~"<<xR<<" Y:"<<yL<<"~"<<yR<<" Z:"<<zL<<"~"<<zR<<endl;
+        //cout<<"Creating X:"<<xL<<"~"<<xR<<" Y:"<<yL<<"~"<<yR<<" Z:"<<zL<<"~"<<zR;
+        //cout<<"  V:"<<mySegment.getVolume()<<endl;
 
         assert(!mySegment.empty());
 
@@ -246,6 +248,8 @@ public:
 
         segment=segment.intersect(mySegment);
 
+        if(segment.empty()) return 0;
+
         if(segment==mySegment){
             return statics.sum;
         }
@@ -264,6 +268,8 @@ public:
     ExtremeType querySegmentMin(Segment3D segment){
 
         segment=segment.intersect(mySegment);
+
+        if(segment.empty())return {};
 
         if(segment==mySegment){
             return statics.min;
@@ -290,6 +296,8 @@ public:
     ExtremeType querySegmentMax(Segment3D segment){
 
         segment=segment.intersect(mySegment);
+
+        if(segment.empty())return {};
 
         if(segment==mySegment){
             return statics.max;
@@ -383,7 +391,7 @@ public:
     Segment3DTreeNode head;
 
     Segment3DTree(int xLength,int yLength,int zLength) : xLength(xLength),yLength(yLength),zLength(zLength),
-    head(Segment3D(1,xLength,1,yLength,1,zLength)){}
+    head(Segment3D(0,xLength,0,yLength,0,zLength)){}
 
     void modifySegment(Segment3D segment,int diff){
         head.modifySegment(segment,diff);
@@ -425,6 +433,8 @@ public:
 
 
 int main(){
-    Segment3DTree tree(10,10,10);
-
+    Segment3DTree t(8,8,8);
+    t.modifyPoint(5,5,6,7);
+    t.modifyPoint(3,3,3,5);
+    cout<<t.queryPoint(5,5,6);
 }
