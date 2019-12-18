@@ -381,6 +381,43 @@ public:
 
     Segment3DTree(int xLength,int yLength,int zLength) : xLength(xLength),yLength(yLength),zLength(zLength),
     head(Segment3D(1,xLength,1,yLength,1,zLength)){}
+
+    void modifySegment(Segment3D segment,int diff){
+        head.modifySegment(segment,diff);
+    }
+
+    void modifyPoint(int x,int y,int z,int diff){
+        head.modifyPoint(x,y,z,diff);
+    }
+
+    int querySegmentSum(Segment3D segment){
+        head.querySegmentSum(segment);
+    }
+
+    int queryPoint(int x,int y,int z){
+        head.queryPoint(x,y,z);
+    }
+
+    ExtremeType querySegmentMin(Segment3D segment){
+        return head.querySegmentMin(segment);
+    }
+
+    ExtremeType queryPointMin(int x,int y,int z){
+        return head.queryPointMin(x,y,z);
+    }
+
+    ExtremeType querySegmentMax(Segment3D segment){
+        return head.querySegmentMax(segment);
+    }
+
+    ExtremeType queryPointMax(int x,int y,int z){
+        return head.queryPointMax(x,y,z);
+    }
+
+    void setSegment(Segment3D segment,int val){
+        head.setSegment(segment,val);
+    }
+
 };
 
 
