@@ -9,6 +9,9 @@ public:
     Segment3D(int xL,int xR,int yL,int yR,int zL,int zR) :
             xL(xL),xR(xR),yL(yL),yR(yR),zL(zL),zR(zR){}
 
+    Segment3D(int x,int y,int z) :
+            xL(x),xR(x+1),yL(y),yR(y+1),zL(z),zR(z+1){}
+
     Segment3D intersect(const Segment3D &b){
         return {max(xL,b.xL),min(xR,b.xR),
                 max(yL,b.yL),min(yR,b.yR),
@@ -120,7 +123,11 @@ public:
     } // Wrapper
 
     StaticsType __modifySegment(Segment3D segment,int diff){
+
+        segment=segment.intersect(mySegment);
+
         if(segment.empty())return statics;
+
         if(segment==mySegment){
             cachedDiff+=diff;
             statics.sum+=diff;
@@ -131,37 +138,93 @@ public:
             statics.clear();
             for(auto &i : son){
                 if(i){
-                    auto re=i->__modifySegment(segment.intersect(i->mySegment),diff);
+                    auto re=i->__modifySegment(segment,diff);
                     statics.update(re);
                 }
             }
+            return statics;
         }
         
     }
 
     void modifySegment(Segment3D segment,int diff){
         __modifySegment(segment,diff);
-    }
+    } // Wrapper
 
     void modifyPoint(int x,int y,int z,int diff){
-        __modifySegment(Segment3D(x,x+1,y,y+1,z,z+1),diff);
+        __modifySegment(Segment3D(x,y,z),diff);
     } // Wrapper
 
     int querySegmentSum(Segment3D segment){
+
+        segment=segment.intersect(mySegment);
+
         if(segment==mySegment){
-            return sum;
+            return statics.sum;
         }
         int res=0;
         for(auto &i:son){
             if(i)
-                res+=i->querySegmentSum(segment.intersect(i->mySegment));
+                res+=i->querySegmentSum(segment);
         }
         return res;
     }
 
     int queryPoint(int x,int y,int z){
-        return querySegmentSum(Segment3D(x,x+1,y,y+1,z,z+1));
+        return querySegmentSum(Segment3D(x,y,z));
     } // Wrapper
+
+    int querySegmentMin(Segment3D segment){
+
+        segment=segment.intersect(mySegment);
+
+        if(segment==mySegment){
+            return statics.min;
+        }
+        int res;
+        bool init=false;
+        for(auto &i:son){
+            if(i){
+                if(!init){
+                    res=i->querySegmentMin(segment);
+                    init=true;
+                }else{
+                    res=std::min(res,i->querySegmentMin(segment));
+                }
+            }
+        }
+        return res;
+    }
+
+    int queryPointMin(int x,int y,int z){
+        return querySegmentMin(Segment3D(x,y,z));
+    }
+
+    int querySegmentMax(Segment3D segment){
+
+        segment=segment.intersect(mySegment);
+
+        if(segment==mySegment){
+            return statics.max;
+        }
+        int res;
+        bool init=false;
+        for(auto &i:son){
+            if(i){
+                if(!init){
+                    res=i->querySegmentMax(segment);
+                    init=true;
+                }else{
+                    res=std::max(res,i->querySegmentMax(segment));
+                }
+            }
+        }
+        return res;
+    }
+
+    int queryPointMax(int x,int y,int z){
+        return querySegmentMax(Segment3D(x,y,z));
+    }
 
     StaticsType setSegment(Segment3D segment,int set){
         if(segment.empty())return statics;
