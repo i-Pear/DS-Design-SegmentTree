@@ -5,12 +5,13 @@ using namespace std;
 class Segment3D{
 public:
     int xL,xR,yL,yR,zL,zR;
+    int area;
 
     Segment3D(int xL,int xR,int yL,int yR,int zL,int zR) :
-            xL(xL),xR(xR),yL(yL),yR(yR),zL(zL),zR(zR){}
+            xL(xL),xR(xR),yL(yL),yR(yR),zL(zL),zR(zR),area((xR-xL)*(yR-yL)*(xR-xL)){}
 
     Segment3D(int x,int y,int z) :
-            xL(x),xR(x+1),yL(y),yR(y+1),zL(z),zR(z+1){}
+            xL(x),xR(x+1),yL(y),yR(y+1),zL(z),zR(z+1),area((xR-xL)*(yR-yL)*(xR-xL)){}
 
     Segment3D intersect(const Segment3D &b){
         return {max(xL,b.xL),min(xR,b.xR),
@@ -19,7 +20,7 @@ public:
     }
 
     int getArea() const{
-        return (xR-xL)*(yR-yL)*(xR-xL);
+        return area;
     }
 
     bool contains(const Segment3D &b){
@@ -34,6 +35,10 @@ public:
         return xL==b.xL && xR==b.xR && yL==b.yL && yR==b.yR && zL==b.zL && zR==b.zR;
     }
 
+    bool isLeaf()const {
+        return area==1;
+    }
+
 };
 
 class ExtremeType{
@@ -44,6 +49,36 @@ public:
     ExtremeType():ExtremeType(0,0){}
     ExtremeType(int v):ExtremeType(0,v){}
     ExtremeType(int i,int v):index(i),val(v){}
+
+    ExtremeType& operator + (int v){
+        val+=v;
+        return *this;
+    }
+
+    ExtremeType& operator += (int v){
+        val+=v;
+        return *this;
+    }
+
+    ExtremeType& operator - (int v){
+        val-=v;
+        return *this;
+    }
+
+    ExtremeType& operator -= (int v){
+        val-=v;
+        return *this;
+    }
+
+    ExtremeType& operator = (int v){
+        val=v;
+        return *this;
+    }
+
+    ExtremeType& operator = (ExtremeType v){
+        val=v.val;
+        return *this;
+    }
 
     bool operator<(const ExtremeType &b) const{
         return val<b.val;
@@ -79,6 +114,12 @@ public:
         min=std::min(min,b.min);
         max=std::max(max,b.max);
         sum+=b.sum;
+    }
+
+    void add(int v,int area){
+        min+=v;
+        max+=v;
+        sum+=v*area;
     }
 
     void clear(){
@@ -150,7 +191,7 @@ public:
 
     /* 区间修改 */
 
-    StaticsType __modifySegment(Segment3D segment,int diff){
+    StaticsType& __modifySegment(Segment3D segment,int diff){
 
         segment=segment.intersect(mySegment);
 
@@ -258,7 +299,7 @@ public:
 
     /* 强制赋值 */
 
-    StaticsType setSegment(Segment3D segment,int set){
+    StaticsType& setSegment(Segment3D segment,int val){
         if(segment.empty())return statics;
 
         if(cachedDiff){
@@ -267,9 +308,9 @@ public:
 
         if(segment==mySegment){
             ifSet=true;
-            cachedSet=set;
-            sum=mySegment.getArea()*set;
-            statics.update(set,set);
+            cachedSet=val;
+            sum=mySegment.getArea()*val;
+            statics.update(val,val);
         }else{
 
         }
@@ -283,8 +324,11 @@ public:
 
     void pushDownDiff(){
         for(auto &i:son){
-            if(i)
-
+            if(i){
+                i->cachedDiff+=cachedDiff;
+                i.sum+=cachedDiff*i->mySegment.getArea();
+                i->statics.max+=
+            }
         }
     }
 
