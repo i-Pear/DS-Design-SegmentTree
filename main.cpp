@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
-using namespace std;
 
+using namespace std;
 
 class Segment3D{
 public:
@@ -22,31 +22,54 @@ public:
         return (xR-xL)*(yR-yL)*(xR-xL);
     }
 
-    bool contains(const Segment3D& b){
-        return xL<=b.xL&&xR>=b.xR&&yL<=b.yL&&yR>=b.yR&&zL<=b.zL&&zR>=b.zR;
+    bool contains(const Segment3D &b){
+        return xL<=b.xL && xR>=b.xR && yL<=b.yL && yR>=b.yR && zL<=b.zL && zR>=b.zR;
     }
 
-    bool empty()const{
-        return xL==xR||yL==yR||zL==zR;
+    bool empty() const{
+        return xL==xR || yL==yR || zL==zR;
     }
 
-    bool operator == (const Segment3D b)const{
-        return xL==b.xL&&xR==b.xR&&yL==b.yL&&yR==b.yR&&zL==b.zL&&zR==b.zR;
+    bool operator==(const Segment3D b) const{
+        return xL==b.xL && xR==b.xR && yL==b.yL && yR==b.yR && zL==b.zL && zR==b.zR;
     }
 
+};
+
+class ExtremeType{
+public:
+    int index;
+    int val;
+
+    ExtremeType():ExtremeType(0,0){}
+    ExtremeType(int v):ExtremeType(0,v){}
+    ExtremeType(int i,int v):index(i),val(v){}
+
+    bool operator<(const ExtremeType &b) const{
+        return val<b.val;
+    }
+
+    bool operator==(const ExtremeType &b) const{
+        return val==b.val;
+    }
+
+    bool operator>(const ExtremeType &b) const{
+        return val>b.val;
+    }
 };
 
 class StaticsType{
 public:
     bool valid;
-    int min;
-    int max;
+    ExtremeType min;
+    ExtremeType max;
     int sum;
 
-    StaticsType(int min,int max,int sum): min(min),max(max),sum(sum),valid(true){}
-    StaticsType(): valid(false){}
+    StaticsType(int min,int max,int sum) : min(min),max(max),sum(sum),valid(true){}
 
-    void update(const StaticsType& b){
+    StaticsType() : valid(false){}
+
+    void update(const StaticsType &b){
         if(!b.valid) return;
         if(!valid){
             valid=true;
@@ -83,7 +106,10 @@ public:
     // 上层set指令可使下层数据无效化
     // sum要求实时保持最新，当请求细分时下传标记
 
-    Segment3DTreeNode(int xL,int xR,int yL,int yR,int zL,int zR) :mySegment(xL,xR,yL,yR,zL,zR){
+
+    /* 构造函数 */
+
+    Segment3DTreeNode(int xL,int xR,int yL,int yR,int zL,int zR) : mySegment(xL,xR,yL,yR,zL,zR){
 
         assert(!mySegment.empty());
 
@@ -106,21 +132,23 @@ public:
         son[1]=new Segment3DTreeNode(xMid,xR,yMid,yR,zMid,zR);
         if(yR-yL>1)
             son[2]=new Segment3DTreeNode(xMid,xR,yL,yMid,zMid,zR);
-        if(xR-xL>1&&yR-yL>1)
+        if(xR-xL>1 && yR-yL>1)
             son[3]=new Segment3DTreeNode(xL,xMid,yL,yMid,zMid,zR);
-        if(xR-xL>1&&zR-zL>1)
+        if(xR-xL>1 && zR-zL>1)
             son[4]=new Segment3DTreeNode(xL,xMid,yMid,yR,zL,zMid);
         if(zR-zL>1)
             son[5]=new Segment3DTreeNode(xMid,xR,yMid,yR,zL,zMid);
-        if(yR-yL>1&&zR-zL>1)
+        if(yR-yL>1 && zR-zL>1)
             son[6]=new Segment3DTreeNode(xMid,xR,yL,yMid,zL,zMid);
-        if(xR-xL>1&&yR-yL>1&&zR-zL>1)
+        if(xR-xL>1 && yR-yL>1 && zR-zL>1)
             son[7]=new Segment3DTreeNode(xL,xMid,yL,yMid,zL,zMid);
     }
 
     explicit Segment3DTreeNode(Segment3D segment){
         Segment3DTreeNode(segment.xL,segment.xR,segment.yL,segment.yR,segment.zL,segment.zR);
     } // Wrapper
+
+    /* 区间修改 */
 
     StaticsType __modifySegment(Segment3D segment,int diff){
 
@@ -144,7 +172,7 @@ public:
             }
             return statics;
         }
-        
+
     }
 
     void modifySegment(Segment3D segment,int diff){
@@ -154,6 +182,8 @@ public:
     void modifyPoint(int x,int y,int z,int diff){
         __modifySegment(Segment3D(x,y,z),diff);
     } // Wrapper
+
+    /* 查询(单点/区间)(区间和/最大值/最小值) */
 
     int querySegmentSum(Segment3D segment){
 
@@ -226,6 +256,8 @@ public:
         return querySegmentMax(Segment3D(x,y,z));
     }
 
+    /* 强制赋值 */
+
     StaticsType setSegment(Segment3D segment,int set){
         if(segment.empty())return statics;
 
@@ -243,12 +275,14 @@ public:
         }
     }
 
+    /* 标记下传 */
+
     void pushDownSet(){
 
     }
 
     void pushDownDiff(){
-        for(auto&i:son){
+        for(auto &i:son){
             if(i)
 
         }
