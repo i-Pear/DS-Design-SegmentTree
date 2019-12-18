@@ -33,23 +33,23 @@ public:
 
 };
 
-class ExtremeType{
+class StaticsType{
 public:
     bool valid;
     int min;
     int max;
+    int sum;
 
-    ExtremeType(int min,int max): min(min),max(max),valid(true){}
-    ExtremeType(): min(0),max(0),valid(false){}
-    void update(const ExtremeType& b){
-        if(!b.valid)return;
+    StaticsType(int min,int max,int sum): min(min),max(max),sum(sum),valid(true){}
+    StaticsType(): valid(false){}
+
+    void update(const StaticsType& b){
+        if(!b.valid) return;
         min=std::min(min,b.min);
         max=std::max(max,b.max);
+        sum+=b.sum;
     }
-    void update(int min,int max){
-        this->min=std::min(this->min,min);
-        this->max=std::max(this->max,max);
-    }
+
 };
 
 template<typename T>
@@ -59,7 +59,7 @@ public:
     int xMid,yMid,zMid; // Midµã´¦Ëã×÷L·¶Î§
     Segment3DTreeNode*son[8];
     int sum;
-    ExtremeType extreme;
+    StaticsType extreme;
     int cachedDiff;
     bool ifSet;
     int cachedSet;
@@ -80,7 +80,7 @@ public:
         yMid=(yL+yR/2);
         zMid=(zL+zR/2);
         sum=0;
-        extreme=ExtremeType(0,0);
+        extreme=StaticsType(0,0);
 
         if(mySegment.getArea()==1){
             return;
@@ -109,8 +109,8 @@ public:
         Segment3DTreeNode(segment.xL,segment.xR,segment.yL,segment.yR,segment.zL,segment.zR);
     }
 
-    ExtremeType __modifySegment(Segment3D segment,int diff){
-        if(segment.empty())return {};
+    StaticsType __modifySegment(Segment3D segment,int diff){
+        if(segment.empty())return extreme;
         sum+=segment.getArea()*diff;
         if(segment==mySegment){
             cachedDiff+=diff;
@@ -150,7 +150,33 @@ public:
         return querySegmentSum(Segment3D(x,x+1,y,y+1,z,z+1));
     }
 
+    StaticsType setSegment(Segment3D segment,int set){
+        if(segment.empty())return extreme;
 
+        if(cachedDiff){
+            pushDownDiff();
+        }
+
+        if(segment==mySegment){
+            ifSet=true;
+            cachedSet=set;
+            sum=mySegment.getArea()*set;
+            extreme.update(set,set);
+        }else{
+
+        }
+    }
+
+    void pushDownSet(){
+
+    }
+
+    void pushDownDiff(){
+        for(auto&i:son){
+            if(i)
+
+        }
+    }
 
 };
 
