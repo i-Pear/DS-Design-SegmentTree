@@ -162,17 +162,17 @@ public:
 
     Segment3DTreeNode(int xL,int xR,int yL,int yR,int zL,int zR) : mySegment(xL,xR,yL,yR,zL,zR){
 
-        if(mySegment.empty()){
-            cout<<"Test";
-        }
+        //Test
+        cout<<"Creating X:"<<xL<<"~"<<xR<<" Y:"<<yL<<"~"<<yR<<" Z:"<<zL<<"~"<<zR<<endl;
+
         assert(!mySegment.empty());
 
         cachedDiff=0;
         ifSet=false;
         cachedSet=0;
-        xMid=(xL+xR/2);
-        yMid=(yL+yR/2);
-        zMid=(zL+zR/2);
+        xMid=(xL+xR)/2;
+        yMid=(yL+yR)/2;
+        zMid=(zL+zR)/2;
         statics=StaticsType(0,0,0);
 
         if(mySegment.isLeaf()){
