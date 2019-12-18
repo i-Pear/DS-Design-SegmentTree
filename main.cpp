@@ -457,11 +457,22 @@ public:
 
     /* Çø¼äÐÞ¸Ä */
 
-    StaticsType &__modifySegment(Segment3D segment,int diff,Segment3DPersistenceTreeNode** parent){
+    StaticsType &__modifySegment(Segment3D segment,int diff,Segment3DPersistenceTreeNode** link){
 
         segment=segment.intersect(mySegment);
 
         if(segment.empty())return statics;
+
+        // If passes here, it shows that modification must go through this node
+
+        if(link){
+            // shows that here's UDD node
+            (*link)=new Segment3DPersistenceTreeNode(*this);
+            (*link)->__modifySegment(segment,diff,nullptr);
+        }else{
+            // shows that here is new node
+            
+        }
 
         if(segment==mySegment){
             cachedDiff+=diff;
@@ -489,6 +500,8 @@ public:
         segment=segment.intersect(mySegment);
 
         if(segment.empty())return statics;
+
+        // If passes here, it shows that modification must go through this node
 
         if(segment==mySegment){
             cachedDiff=0;
