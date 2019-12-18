@@ -141,7 +141,7 @@ public:
 
 class Segment3DTreeNode{
 
-private:
+protected:
 
     Segment3D mySegment;
     int xMid,yMid,zMid; // Mid点处算作L范围
@@ -295,7 +295,7 @@ public:
     } // Wrapper
 
     void modifyPoint(int x,int y,int z,int diff){
-        __modifySegment(Segment3D(x,y,z),diff);
+        modifySegment(Segment3D(x,y,z),diff);
     } // Wrapper
 
 
@@ -379,6 +379,10 @@ public:
         __setSegment(segment,val);
     } // Wrapper
 
+    void setPoint(int x,int y,int z,int val){
+        setSegment(Segment3D(x,y,z),val);
+    } // Wrapper
+
 
     /* 析构函数 */
 
@@ -394,9 +398,13 @@ public:
 
 
 class Segment3DTree{
-private:
+
+protected:
+
     Segment3DTreeNode head;
+
 public:
+
     int xLength;
     int yLength;
     int zLength;
@@ -432,6 +440,89 @@ public:
         head.setSegment(segment,val);
     }
 
+    void setPoint(int x,int y,int z,int val){
+        head.setPoint(x,y,z,val);
+    }
+
+};
+
+
+class Segment3DPersistenceTreeNode:public Segment3DTreeNode{
+
+private:
+
+    Segment3DPersistenceTreeNode* son[8];
+
+public:
+
+    /* 区间修改 */
+
+    StaticsType &__modifySegment(Segment3D segment,int diff,Segment3DPersistenceTreeNode** parent){
+
+        segment=segment.intersect(mySegment);
+
+        if(segment.empty())return statics;
+
+        if(segment==mySegment){
+            cachedDiff+=diff;
+            statics.sum+=diff;
+            statics.min+=diff;
+            statics.max+=diff;
+            return statics;
+        }else{
+            statics.clear();
+            for(auto &i : son){
+                if(i){
+                    auto re=i->__modifySegment(segment,diff);
+                    statics.update(re);
+                }
+            }
+            return statics;
+        }
+
+    }
+
+    /* 区间赋值 */
+
+    StaticsType &__setSegment(Segment3D segment,int val){
+
+        segment=segment.intersect(mySegment);
+
+        if(segment.empty())return statics;
+
+        if(segment==mySegment){
+            cachedDiff=0;
+            ifSet=true;
+            cachedSet=val;
+            statics.max=statics.min=val;
+            statics.sum=val*mySegment.getVolume();
+        }else{
+            if(cachedDiff){
+                pushDownDiff();
+            }
+            statics.clear();
+            for(auto &i:son){
+                if(i){
+                    auto re=i->__setSegment(segment,val);
+                    statics.update(re);
+                }
+            }
+            return statics;
+        }
+    }
+
+    void modifySegment(Segment3D segment,int diff){
+        __modifySegment(segment,diff);
+    } // Wrapper
+
+    void setSegment(Segment3D segment,int val){
+        __setSegment(segment,val);
+    } // Wrapper
+
+};
+
+class Segment3DPersistenceTree:public Segment3DTree{
+
 };
 
 
@@ -440,4 +531,5 @@ int main(){
     t.modifyPoint(2,2,2,100);
     t.modifyPoint(3,3,2,50);
     cout<<t.querySegmentMin(Segment3D(1,4,1,4,1,3)).index;
+    t.
 }
