@@ -2,6 +2,7 @@
 
 using namespace std;
 
+
 class Segment3D{
 public:
 
@@ -36,11 +37,12 @@ public:
         return xL==b.xL && xR==b.xR && yL==b.yL && yR==b.yR && zL==b.zL && zR==b.zR;
     }
 
-    bool isLeaf()const {
+    bool isLeaf() const{
         return area==1;
     }
 
 };
+
 
 class ExtremeType{
 public:
@@ -48,38 +50,38 @@ public:
     int index;
     int val;
 
-    ExtremeType():ExtremeType(0,0){}
+    ExtremeType() : ExtremeType(0,0){}
 
-    ExtremeType(int v):ExtremeType(0,v){}
+    ExtremeType(int v) : ExtremeType(0,v){}
 
-    ExtremeType(int i,int v):index(i),val(v){}
+    ExtremeType(int i,int v) : index(i),val(v){}
 
-    ExtremeType& operator + (int v){
+    ExtremeType &operator+(int v){
         val+=v;
         return *this;
     }
 
-    ExtremeType& operator += (int v){
+    ExtremeType &operator+=(int v){
         val+=v;
         return *this;
     }
 
-    ExtremeType& operator - (int v){
+    ExtremeType &operator-(int v){
         val-=v;
         return *this;
     }
 
-    ExtremeType& operator -= (int v){
+    ExtremeType &operator-=(int v){
         val-=v;
         return *this;
     }
 
-    ExtremeType& operator = (int v){
+    ExtremeType &operator=(int v){
         val=v;
         return *this;
     }
 
-    ExtremeType& operator = (ExtremeType v){
+    ExtremeType &operator=(ExtremeType v){
         val=v.val;
         return *this;
     }
@@ -97,6 +99,7 @@ public:
     }
 
 };
+
 
 class StaticsType{
 public:
@@ -133,6 +136,7 @@ public:
     }
 
 };
+
 
 class Segment3DTreeNode{
 public:
@@ -191,13 +195,14 @@ public:
             son[7]=new Segment3DTreeNode(xL,xMid,yL,yMid,zL,zMid);
     }
 
-    explicit Segment3DTreeNode(Segment3D segment):Segment3DTreeNode(segment.xL,segment.xR,segment.yL,segment.yR,segment.zL,segment.zR){} // Wrapper
+    explicit Segment3DTreeNode(Segment3D segment) : Segment3DTreeNode(segment.xL,segment.xR,segment.yL,segment.yR,
+                                                                      segment.zL,segment.zR){} // Wrapper
 
 
 
     /* 区间修改 */
 
-    StaticsType& __modifySegment(Segment3D segment,int diff){
+    StaticsType &__modifySegment(Segment3D segment,int diff){
 
         segment=segment.intersect(mySegment);
 
@@ -306,35 +311,45 @@ public:
     }
 
 
-
     /* 强制赋值 */
 
-    StaticsType& setSegment(Segment3D segment,int val){
+    StaticsType &__setSegment(Segment3D segment,int val){
 
         segment=segment.intersect(mySegment);
 
         if(segment.empty())return statics;
 
-        if(cachedDiff){
-            pushDownDiff();
-        }
-
         if(segment==mySegment){
+            cachedDiff=0;
             ifSet=true;
             cachedSet=val;
             statics.max=statics.min=val;
             statics.sum=val*mySegment.getVolume();
         }else{
-
+            if(cachedDiff){
+                pushDownDiff();
+            }
+            statics.clear();
+            for(auto &i:son){
+                if(i){
+                    auto re=i->__setSegment(segment,val);
+                    statics.update(re);
+                }
+            }
+            return statics;
         }
     }
+
+    void setSegment(Segment3D segment,int val){
+        __setSegment(segment,val);
+    } // Wrapper
 
 
 
     /* 标记下传 */
 
     void pushDownSet(){
-        for(auto&i:son){
+        for(auto &i:son){
             if(i){
                 i->cachedDiff=0;
                 i->ifSet=true;
@@ -356,17 +371,19 @@ public:
 
 };
 
+
 class Segment3DTree{
 public:
     int xLength;
     int yLength;
+    int zLength;
+    Segment3DTreeNode head;
 
-    Segment3DTree(int xLength,int yLength){
-
-    }
+    Segment3DTree(int xLength,int yLength,int zLength) : xLength(xLength),yLength(yLength),zLength(zLength),
+    head(Segment3D(1,xLength,1,yLength,1,zLength)){}
 };
 
 
 int main(){
-
+    cout<<"Hello World"<<endl;
 }
