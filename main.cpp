@@ -10,15 +10,15 @@ public:
     int area;
 
     Segment3D(int xL,int xR,int yL,int yR,int zL,int zR) :
-            xL(xL),xR(xR),yL(yL),yR(yR),zL(zL),zR(zR),area((xR-xL)*(yR-yL)*(xR-xL)){}
+            xL(xL),xR(xR),yL(yL),yR(yR),zL(zL),zR(zR),area((xR-xL)*(yR-yL)*(zR-zL)){}
 
     Segment3D(int x,int y,int z) :
-            xL(x),xR(x+1),yL(y),yR(y+1),zL(z),zR(z+1),area((xR-xL)*(yR-yL)*(xR-xL)){}
+            xL(x),xR(x+1),yL(y),yR(y+1),zL(z),zR(z+1),area((xR-xL)*(yR-yL)*(zR-zL)){}
 
     Segment3D intersect(const Segment3D &b){
         return {max(xL,b.xL),min(xR,b.xR),
                 max(yL,b.yL),min(yR,b.yR),
-                max(zL,b.zL),min(xR,b.zR)};
+                max(zL,b.zL),min(zR,b.zR)};
     }
 
     int getVolume() const{
@@ -433,8 +433,8 @@ public:
 
 
 int main(){
-    Segment3DTree t(8,8,8);
-    t.modifyPoint(5,5,6,7);
-    t.modifyPoint(3,3,3,5);
-    cout<<t.queryPoint(5,5,6);
+    Segment3DTree t(4,4,4);
+    t.modifyPoint(2,2,2,100);
+    t.modifyPoint(3,3,2,50);
+    cout<<t.querySegmentSum(Segment3D(1,3,1,3,1,3));
 }
