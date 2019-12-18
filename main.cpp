@@ -283,6 +283,18 @@ public:
             son[7]=new Segment3DTreeNode(xL,xMid,yL,yMid,zL,zMid);
     }
 
+    Segment3DTreeNode(const Segment3DTreeNode& b) : mySegment(b.mySegment){
+
+        cachedDiff=b.cachedDiff;
+        ifSet=b.ifSet;
+        cachedSet=b.cachedSet;
+        xMid=b.xMid;
+        yMid=b.yMid;
+        zMid=b.zMid;
+        statics=b.statics;
+
+    }
+
     explicit Segment3DTreeNode(Segment3D segment) : Segment3DTreeNode(segment.xL,segment.xR,segment.yL,segment.yR,
                                                                       segment.zL,segment.zR){} // Wrapper
 
@@ -417,16 +429,16 @@ public:
     }
 
     void modifyPoint(int x,int y,int z,int diff){
-        head.modifyPoint(x,y,z,diff);
-    }
+        modifySegment(Segment3D(x,y,z),diff);
+    } //Wrapper
 
     int querySegmentSum(Segment3D segment){
         head.querySegmentSum(segment);
     }
 
     int queryPoint(int x,int y,int z){
-        head.queryPoint(x,y,z);
-    }
+        return querySegmentSum(Segment3D(x,y,z));
+    } //Wrapper
 
     ExtremeType querySegmentMin(Segment3D segment){
         return head.querySegmentMin(segment);
@@ -441,8 +453,8 @@ public:
     }
 
     void setPoint(int x,int y,int z,int val){
-        head.setPoint(x,y,z,val);
-    }
+        setSegment(Segment3D(x,y,z),val);
+    } //Wrapper
 
 };
 
@@ -550,8 +562,41 @@ class Segment3DPersistenceTree:public Segment3DTree{
 public:
 
     list<Segment3DPersistenceTreeNode> heads;
+    int count;
 
-    
+    Segment3DPersistenceTree(int xLength,int yLength,int zLength):Segment3DTree(xLength,yLength,zLength){
+        count=1;
+    }
+
+    void createDuplicate(){
+        heads.push_back(heads.back());
+        count++;
+    }
+
+    void modifySegment(Segment3D segment,int diff){
+        createDuplicate();
+        heads.back().modifySegment(segment,diff);
+    }
+
+    int querySegmentSum(Segment3D segment){
+        createDuplicate();
+        return heads.back().querySegmentSum(segment);
+    }
+
+    ExtremeType querySegmentMin(Segment3D segment){
+        createDuplicate();
+        return heads.back().querySegmentMin(segment);
+    }
+
+    ExtremeType querySegmentMax(Segment3D segment){
+        createDuplicate();
+        return heads.back().querySegmentMax(segment);
+    }
+
+    void setSegment(Segment3D segment,int val){
+        createDuplicate();
+        heads.back().setSegment(segment,val);
+    }
 
 };
 
@@ -561,5 +606,4 @@ int main(){
     t.modifyPoint(2,2,2,100);
     t.modifyPoint(3,3,2,50);
     cout<<t.querySegmentMin(Segment3D(1,4,1,4,1,3)).index;
-    t.
 }
