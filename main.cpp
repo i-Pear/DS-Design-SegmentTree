@@ -45,9 +45,18 @@ public:
 
     void update(const StaticsType& b){
         if(!b.valid) return;
+        if(!valid){
+            valid=true;
+            *this=b;
+            return;
+        }
         min=std::min(min,b.min);
         max=std::max(max,b.max);
         sum+=b.sum;
+    }
+
+    void clear(){
+        valid=false;
     }
 
 };
@@ -58,11 +67,12 @@ public:
     Segment3D mySegment;
     int xMid,yMid,zMid; // Mid点处算作L范围
     Segment3DTreeNode*son[8];
-    int sum;
-    StaticsType extreme;
+    StaticsType statics;
     int cachedDiff;
     bool ifSet;
     int cachedSet;
+
+    // 八叉树非满，操作时注意判断子树存在性
 
     // 定义操作优先级：set>modify
     // 即节点既有cachedDiff又有cachedSet时，先执行set
@@ -71,6 +81,7 @@ public:
     // sum要求实时保持最新，当请求细分时下传标记
 
     Segment3DTreeNode(int xL,int xR,int yL,int yR,int zL,int zR) :mySegment(xL,xR,yL,yR,zL,zR){
+
         assert(!mySegment.empty());
 
         cachedDiff=0;
@@ -79,8 +90,7 @@ public:
         xMid=(xL+xR/2);
         yMid=(yL+yR/2);
         zMid=(zL+zR/2);
-        sum=0;
-        extreme=StaticsType(0,0);
+        statics=StaticsType(0,0,0);
 
         if(mySegment.getArea()==1){
             return;
@@ -107,19 +117,22 @@ public:
 
     explicit Segment3DTreeNode(Segment3D segment){
         Segment3DTreeNode(segment.xL,segment.xR,segment.yL,segment.yR,segment.zL,segment.zR);
-    }
+    } // Wrapper
 
     StaticsType __modifySegment(Segment3D segment,int diff){
-        if(segment.empty())return extreme;
-        sum+=segment.getArea()*diff;
+        if(segment.empty())return statics;
         if(segment==mySegment){
             cachedDiff+=diff;
-            return {};
+            statics.sum+=diff;
+            statics.min+=diff;
+            statics.max+=diff;
+            return statics;
         }else{
+            statics.clear();
             for(auto &i : son){
                 if(i){
                     auto re=i->__modifySegment(segment.intersect(i->mySegment),diff);
-                    extreme.update(re);
+                    statics.update(re);
                 }
             }
         }
@@ -132,7 +145,7 @@ public:
 
     void modifyPoint(int x,int y,int z,int diff){
         __modifySegment(Segment3D(x,x+1,y,y+1,z,z+1),diff);
-    }
+    } // Wrapper
 
     int querySegmentSum(Segment3D segment){
         if(segment==mySegment){
@@ -148,10 +161,10 @@ public:
 
     int queryPoint(int x,int y,int z){
         return querySegmentSum(Segment3D(x,x+1,y,y+1,z,z+1));
-    }
+    } // Wrapper
 
     StaticsType setSegment(Segment3D segment,int set){
-        if(segment.empty())return extreme;
+        if(segment.empty())return statics;
 
         if(cachedDiff){
             pushDownDiff();
@@ -161,7 +174,7 @@ public:
             ifSet=true;
             cachedSet=set;
             sum=mySegment.getArea()*set;
-            extreme.update(set,set);
+            statics.update(set,set);
         }else{
 
         }
