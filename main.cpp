@@ -320,6 +320,10 @@ public:
 
         if(segment.empty()) return 0;
 
+        if(ifSet){
+            return segment.getVolume()*cachedSet;
+        }
+
         if(segment==mySegment){
             return statics.sum;
         }
@@ -328,6 +332,7 @@ public:
             if(i)
                 res+=i->querySegmentSum(segment);
         }
+        res+=segment.getVolume()*cachedDiff;
         return res;
     }
 
@@ -340,6 +345,10 @@ public:
         segment=segment.intersect(mySegment);
 
         if(segment.empty())return {};
+
+        if(ifSet){
+            return segment.getVolume()*cachedSet;
+        }
 
         if(segment==mySegment){
             return statics.min;
@@ -364,6 +373,10 @@ public:
         segment=segment.intersect(mySegment);
 
         if(segment.empty())return {};
+
+        if(ifSet){
+            return segment.getVolume()*cachedSet;
+        }
 
         if(segment==mySegment){
             return statics.max;
