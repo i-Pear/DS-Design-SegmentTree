@@ -414,7 +414,7 @@ public:
     ~Segment3DTreeNode(){
         for(auto&i:son){
             if(i){
-                delete(i);
+                //delete(i);
             }
         }
     }
@@ -479,6 +479,9 @@ private:
     Segment3DPersistenceTreeNode* son[8];
 
 public:
+
+    Segment3DPersistenceTreeNode(Segment3D segment):Segment3DTreeNode(segment){}
+
 
     /* 区间修改 */
 
@@ -579,10 +582,12 @@ public:
 
     Segment3DPersistenceTree(int xLength,int yLength,int zLength):Segment3DTree(xLength,yLength,zLength){
         count=1;
+        heads.push_back(Segment3DPersistenceTreeNode(Segment3D(0,xLength,0,yLength,0,zLength)));
     }
 
     void createDuplicate(){
-        heads.push_back(heads.back());
+        auto temp=heads.back();
+        heads.push_back(temp);
         count++;
     }
 
@@ -591,18 +596,24 @@ public:
         heads.back().modifySegment(segment,diff);
     }
 
+    void modifyPoint(int x,int y,int z,int diff){
+        modifySegment(Segment3D(x,y,z),diff);
+    } //Wrapper
+
     int querySegmentSum(Segment3D segment){
-        createDuplicate();
         return heads.back().querySegmentSum(segment);
     }
 
+    int queryPoint(int x,int y,int z){
+        return querySegmentSum(Segment3D(x,y,z));
+    } //Wrapper
+
     ExtremeType querySegmentMin(Segment3D segment){
-        createDuplicate();
+        cout<<"size="<<heads.size()<<endl;
         return heads.back().querySegmentMin(segment);
     }
 
     ExtremeType querySegmentMax(Segment3D segment){
-        createDuplicate();
         return heads.back().querySegmentMax(segment);
     }
 
@@ -611,11 +622,15 @@ public:
         heads.back().setSegment(segment,val);
     }
 
+    void setPoint(int x,int y,int z,int val){
+        setSegment(Segment3D(x,y,z),val);
+    } //Wrapper
+
 };
 
 
 int main(){
-    Segment3DTree t(4,4,4);
+    Segment3DPersistenceTree t(4,4,4);
     t.modifyPoint(2,2,2,100);
     t.modifyPoint(3,3,2,50);
     cout<<t.querySegmentMin(Segment3D(1,4,1,4,1,3)).index;
