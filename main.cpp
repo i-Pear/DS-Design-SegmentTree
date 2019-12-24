@@ -21,6 +21,17 @@ public:
                 max(zL,b.zL),min(zR,b.zR)};
     }
 
+    Segment3D& operator = (const Segment3D& b){
+        xL=b.xL;
+        xR=b.xR;
+        yL=b.yL;
+        yR=b.yR;
+        zL=b.zL;
+        zR=b.zR;
+        area=b.area;
+        return *this;
+    }
+
     int getVolume() const{
         return area;
     }
@@ -247,8 +258,8 @@ public:
     Segment3DTreeNode(int xL,int xR,int yL,int yR,int zL,int zR) : mySegment(xL,xR,yL,yR,zL,zR){
 
         //Test
-        //cout<<"Creating X:"<<xL<<"~"<<xR<<" Y:"<<yL<<"~"<<yR<<" Z:"<<zL<<"~"<<zR;
-        //cout<<"  V:"<<mySegment.getVolume()<<endl;
+        cout<<"Creating X:"<<xL<<"~"<<xR<<" Y:"<<yL<<"~"<<yR<<" Z:"<<zL<<"~"<<zR;
+        cout<<"  V:"<<mySegment.getVolume()<<endl;
 
         assert(!mySegment.empty());
 
@@ -630,8 +641,8 @@ public:
 
 
 int main(){
-    Segment3DPersistenceTree t(4,4,4);
-    t.modifyPoint(2,2,2,100);
-    t.modifyPoint(3,3,2,50);
-    cout<<t.querySegmentMin(Segment3D(1,4,1,4,1,3)).index;
+    Segment3DTree t(4,4,4);
+    //t.modifyPoint(2,2,2,100);
+    //t.modifyPoint(3,3,2,50);
+    //cout<<t.querySegmentMin(Segment3D(1,4,1,4,1,3)).index;
 }
