@@ -2,7 +2,6 @@
 
 using namespace std;
 
-
 class Segment3D{
 public:
 
@@ -643,10 +642,9 @@ public:
 
 
 int main(){
-    Segment3DPersistenceTree t(4,4,4);
-    int a;
-    a=1;
+    Segment3DTree t(4,4,4);
     t.modifyPoint(2,2,2,100);
-    t.setSegment(Segment3D(1,3,1,3,1,3),50);
-    cout<<t.querySegmentSum(Segment3D(1,3,1,3,1,3));
+    t.modifyPoint(3,3,2,50);
+
+    //cout<<t.querySegmentMin(Segment3D(1,4,1,4,1,3)).index;
 }
