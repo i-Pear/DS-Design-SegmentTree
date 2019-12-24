@@ -11,13 +11,9 @@ public:
 
     Segment3DPersistenceTreeNode(Segment3D segment) : Segment3DTreeNode(segment){}
 
-    Segment3DPersistenceTreeNode(Segment3DPersistenceTreeNode &b) : Segment3DTreeNode(b){
+    Segment3DPersistenceTreeNode(Segment3DPersistenceTreeNode &b) : Segment3DTreeNode(b){}
 
-    }
-
-    Segment3DPersistenceTreeNode(Segment3DTreeNode &b) : Segment3DTreeNode(b){
-
-    }
+    Segment3DPersistenceTreeNode(Segment3DTreeNode &b) : Segment3DTreeNode(b){}
 
 
     /* 区间修改 */
@@ -114,7 +110,7 @@ public:
 
 class Segment3DPersistenceTree{
 
-protected:
+private:
 
     list<Segment3DPersistenceTreeNode> heads;
     int count;

@@ -185,7 +185,7 @@ public:
         if(segment.empty()) return 0;
 
         if(ifSet){
-            return segment.getVolume()*cachedSet;
+            return segment.getVolume()*(cachedSet+cachedDiff);
         }
 
         if(segment==mySegment){
