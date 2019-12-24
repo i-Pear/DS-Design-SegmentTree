@@ -248,8 +248,8 @@ public:
     Segment3DTreeNode(int xL,int xR,int yL,int yR,int zL,int zR) : mySegment(xL,xR,yL,yR,zL,zR){
 
         //Test
-        cout<<"Creating X:"<<xL<<"~"<<xR<<" Y:"<<yL<<"~"<<yR<<" Z:"<<zL<<"~"<<zR;
-        cout<<"  V:"<<mySegment.getVolume()<<endl;
+        //cout<<"Creating X:"<<xL<<"~"<<xR<<" Y:"<<yL<<"~"<<yR<<" Z:"<<zL<<"~"<<zR;
+        //cout<<"  V:"<<mySegment.getVolume()<<endl;
 
         assert(!mySegment.empty());
 
