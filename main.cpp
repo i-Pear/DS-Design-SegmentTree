@@ -504,6 +504,7 @@ public:
             // shows that here's UDD node
             (*link)=new Segment3DPersistenceTreeNode(*this);
             (*link)->__modifySegment(segment,diff,nullptr);
+            return statics;
         }else{
             // shows that here is new node
             // so continue
@@ -542,6 +543,7 @@ public:
             // shows that here's UDD node
             (*link)=new Segment3DPersistenceTreeNode(*this);
             (*link)->__setSegment(segment,val,nullptr);
+            return statics;
         }else{
             // shows that here is new node
             // so continue
@@ -587,20 +589,20 @@ protected:
     list<Segment3DPersistenceTreeNode> heads;
     int count;
 
-public:
+    void createDuplicate(){
+        heads.emplace_back(heads.back());
+        count++;
+    }
 
     int xLength;
     int yLength;
     int zLength;
 
+public:
+
     Segment3DPersistenceTree(int xLength,int yLength,int zLength) : xLength(xLength),yLength(yLength),zLength(zLength){
         count=1;
         heads.emplace_back(Segment3D(0,xLength,0,yLength,0,zLength));
-    }
-
-    void createDuplicate(){
-        heads.emplace_back(heads.back());
-        count++;
     }
 
     void modifySegment(Segment3D segment,int diff){
@@ -612,21 +614,33 @@ public:
         modifySegment(Segment3D(x,y,z),diff);
     } //Wrapper
 
-    int querySegmentSum(Segment3D segment){
-        return heads.back().querySegmentSum(segment);
+    int querySegmentSum(Segment3D segment,int time){
+        auto iter=heads.begin();
+        while(time--){
+            iter++;
+        }
+        return iter->querySegmentSum(segment);
     }
 
-    int queryPoint(int x,int y,int z){
-        return querySegmentSum(Segment3D(x,y,z));
+    int queryPoint(int x,int y,int z,int time){
+        return querySegmentSum(Segment3D(x,y,z),time);
     } //Wrapper
 
-    ExtremeType querySegmentMin(Segment3D segment){
+    ExtremeType querySegmentMin(Segment3D segment,int time){
         cout<<"DEBUG::size="<<heads.size()<<endl;
-        return heads.back().querySegmentMin(segment);
+        auto iter=heads.begin();
+        while(time--){
+            iter++;
+        }
+        return iter->querySegmentMin(segment);
     }
 
-    ExtremeType querySegmentMax(Segment3D segment){
-        return heads.back().querySegmentMax(segment);
+    ExtremeType querySegmentMax(Segment3D segment,int time){
+        auto iter=heads.begin();
+        while(time--){
+            iter++;
+        }
+        return iter->querySegmentMax(segment);
     }
 
     void setSegment(Segment3D segment,int val){
@@ -642,9 +656,16 @@ public:
 
 
 int main(){
-    Segment3DTree t(4,4,4);
+    Segment3DPersistenceTree t(4,4,4);
+    cout<<t.querySegmentSum(Segment3D(1,3,1,3,1,3),0)<<endl;
+    cout<<endl;
     t.modifyPoint(2,2,2,100);
-    t.modifyPoint(3,3,2,50);
-
-    //cout<<t.querySegmentMin(Segment3D(1,4,1,4,1,3)).index;
+    cout<<t.querySegmentSum(Segment3D(1,3,1,3,1,3),0)<<endl;
+    cout<<t.querySegmentSum(Segment3D(1,3,1,3,1,3),1)<<endl;
+    cout<<endl;
+    t.setSegment(Segment3D(1,3,1,3,1,3),50);
+    cout<<t.querySegmentSum(Segment3D(1,3,1,3,1,3),0)<<endl;
+    cout<<t.querySegmentSum(Segment3D(1,3,1,3,1,3),1)<<endl;
+    cout<<t.querySegmentSum(Segment3D(1,3,1,3,1,3),2)<<endl;
+    cout<<endl;
 }
