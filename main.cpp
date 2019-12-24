@@ -477,8 +477,6 @@ class Segment3DPersistenceTreeNode : public Segment3DTreeNode{
 
 private:
 
-    Segment3DPersistenceTreeNode*son[8];
-
 public:
 
     Segment3DPersistenceTreeNode(Segment3D segment) : Segment3DTreeNode(segment){}
@@ -521,7 +519,7 @@ public:
             statics.clear();
             for(auto &i : son){
                 if(i){
-                    auto re=i->__modifySegment(segment,diff,&i);
+                    auto re=((Segment3DPersistenceTreeNode*)i)->__modifySegment(segment,diff,((Segment3DPersistenceTreeNode**)(&i)));
                     statics.update(re);
                 }
             }
@@ -562,7 +560,7 @@ public:
             statics.clear();
             for(auto &i:son){
                 if(i){
-                    auto re=i->__setSegment(segment,val,&i);
+                    auto re=((Segment3DPersistenceTreeNode*)i)->__setSegment(segment,val,((Segment3DPersistenceTreeNode**)(&i)));
                     statics.update(re);
                 }
             }
