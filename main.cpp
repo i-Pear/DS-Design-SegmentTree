@@ -601,7 +601,7 @@ protected:
 public:
 
     Segment3DPersistenceTree(int xLength,int yLength,int zLength) : xLength(xLength),yLength(yLength),zLength(zLength){
-        count=1;
+        count=0;
         heads.emplace_back(Segment3D(0,xLength,0,yLength,0,zLength));
     }
 
@@ -652,20 +652,21 @@ public:
         setSegment(Segment3D(x,y,z),val);
     } //Wrapper
 
+    void DEBUG_Output_Sum_Process(Segment3D segment){
+        for(int i=0;i<=count;i++){
+            cout<<"Step "<<i<<" : "<<querySegmentSum(segment,i)<<endl;
+        }
+        cout<<endl;
+    }
+
 };
 
 
 int main(){
     Segment3DPersistenceTree t(4,4,4);
-    cout<<t.querySegmentSum(Segment3D(1,3,1,3,1,3),0)<<endl;
-    cout<<endl;
+    t.DEBUG_Output_Sum_Process(Segment3D(1,3,1,3,1,3));
     t.modifyPoint(2,2,2,100);
-    cout<<t.querySegmentSum(Segment3D(1,3,1,3,1,3),0)<<endl;
-    cout<<t.querySegmentSum(Segment3D(1,3,1,3,1,3),1)<<endl;
-    cout<<endl;
+    t.DEBUG_Output_Sum_Process(Segment3D(1,3,1,3,1,3));
     t.setSegment(Segment3D(1,3,1,3,1,3),50);
-    cout<<t.querySegmentSum(Segment3D(1,3,1,3,1,3),0)<<endl;
-    cout<<t.querySegmentSum(Segment3D(1,3,1,3,1,3),1)<<endl;
-    cout<<t.querySegmentSum(Segment3D(1,3,1,3,1,3),2)<<endl;
-    cout<<endl;
+    t.DEBUG_Output_Sum_Process(Segment3D(1,3,1,3,1,3));
 }
