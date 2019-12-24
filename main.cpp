@@ -294,6 +294,7 @@ public:
         yMid=b.yMid;
         zMid=b.zMid;
         statics=b.statics;
+        memcpy(son,b.son,sizeof(son));
 
     }
 
@@ -599,8 +600,7 @@ public:
     }
 
     void createDuplicate(){
-        auto temp=heads.back();
-        heads.emplace_back(temp);
+        heads.emplace_back(heads.back());
         count++;
     }
 
@@ -622,7 +622,7 @@ public:
     } //Wrapper
 
     ExtremeType querySegmentMin(Segment3D segment){
-        cout<<"size="<<heads.size()<<endl;
+        cout<<"DEBUG::size="<<heads.size()<<endl;
         return heads.back().querySegmentMin(segment);
     }
 
@@ -638,7 +638,6 @@ public:
     void setPoint(int x,int y,int z,int val){
         setSegment(Segment3D(x,y,z),val);
     } //Wrapper
-
 
 };
 
