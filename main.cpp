@@ -2,7 +2,7 @@
 
 using namespace std;
 
-//123
+
 class Segment3D{
 public:
 
@@ -21,16 +21,7 @@ public:
                 max(zL,b.zL),min(zR,b.zR)};
     }
 
-    Segment3D& operator = (const Segment3D& b){
-        xL=b.xL;
-        xR=b.xR;
-        yL=b.yL;
-        yR=b.yR;
-        zL=b.zL;
-        zR=b.zR;
-        area=b.area;
-        return *this;
-    }
+    Segment3D& operator = (const Segment3D& b)= default;
 
     int getVolume() const{
         return area;
