@@ -484,6 +484,14 @@ public:
 
     Segment3DPersistenceTreeNode(Segment3D segment):Segment3DTreeNode(segment){}
 
+    Segment3DPersistenceTreeNode(Segment3DPersistenceTreeNode& b):Segment3DTreeNode(b){
+
+    }
+
+    Segment3DPersistenceTreeNode(Segment3DTreeNode& b):Segment3DTreeNode(b){
+
+    }
+
 
     /* 区间修改 */
 
@@ -575,14 +583,20 @@ public:
 };
 
 
-class Segment3DPersistenceTree:public Segment3DTree{
+class Segment3DPersistenceTree{
 
-public:
+protected:
 
     list<Segment3DPersistenceTreeNode> heads;
     int count;
 
-    Segment3DPersistenceTree(int xLength,int yLength,int zLength):Segment3DTree(xLength,yLength,zLength){
+public:
+
+    int xLength;
+    int yLength;
+    int zLength;
+
+    Segment3DPersistenceTree(int xLength,int yLength,int zLength){
         count=1;
         heads.push_back(Segment3DPersistenceTreeNode(Segment3D(0,xLength,0,yLength,0,zLength)));
     }
@@ -628,14 +642,15 @@ public:
         setSegment(Segment3D(x,y,z),val);
     } //Wrapper
 
+
 };
 
 
 int main(){
-    Segment3DTree t(4,4,4);
+    Segment3DPersistenceTree t(4,4,4);
     int a;
     a=1;
     t.modifyPoint(2,2,2,100);
-    t.setSegment(Segment3D(2,3,2,3,2,3),50);
-    cout<<t.querySegmentSum(Segment3D(2,3,2,3,2,3));
+    t.setSegment(Segment3D(1,3,1,3,1,3),50);
+    cout<<t.querySegmentSum(Segment3D(1,3,1,3,1,3));
 }
