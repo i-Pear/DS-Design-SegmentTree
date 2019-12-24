@@ -20,16 +20,7 @@ public:
                 max(zL,b.zL),min(zR,b.zR)};
     }
 
-    Segment3D& operator = (const Segment3D& b){
-        xL=b.xL;
-        xR=b.xR;
-        yL=b.yL;
-        yR=b.yR;
-        zL=b.zL;
-        zR=b.zR;
-        area=b.area;
-        return *this;
-    }
+    Segment3D &operator=(const Segment3D &b) = default;
 
     int getVolume() const{
         return area;
@@ -293,7 +284,7 @@ public:
             son[7]=new Segment3DTreeNode(xL,xMid,yL,yMid,zL,zMid);
     }
 
-    Segment3DTreeNode(const Segment3DTreeNode& b) : mySegment(b.mySegment){
+    Segment3DTreeNode(const Segment3DTreeNode &b) : mySegment(b.mySegment){
 
         cachedDiff=b.cachedDiff;
         ifSet=b.ifSet;
@@ -407,7 +398,6 @@ public:
     }
 
 
-
     /* 强制赋值 */
 
     void setSegment(Segment3D segment,int val){
@@ -422,7 +412,7 @@ public:
     /* 析构函数 */
 
     ~Segment3DTreeNode(){
-        for(auto&i:son){
+        for(auto &i:son){
             if(i){
                 //delete(i);
             }
@@ -445,7 +435,7 @@ public:
     int zLength;
 
     Segment3DTree(int xLength,int yLength,int zLength) : xLength(xLength),yLength(yLength),zLength(zLength),
-    head(Segment3D(0,xLength,0,yLength,0,zLength)){}
+                                                         head(Segment3D(0,xLength,0,yLength,0,zLength)){}
 
     void modifySegment(Segment3D segment,int diff){
         head.modifySegment(segment,diff);
@@ -482,20 +472,26 @@ public:
 };
 
 
-class Segment3DPersistenceTreeNode:public Segment3DTreeNode{
+class Segment3DPersistenceTreeNode : public Segment3DTreeNode{
 
 private:
 
-    Segment3DPersistenceTreeNode* son[8];
-
 public:
 
-    Segment3DPersistenceTreeNode(Segment3D segment):Segment3DTreeNode(segment){}
+    Segment3DPersistenceTreeNode(Segment3D segment) : Segment3DTreeNode(segment){}
+
+    Segment3DPersistenceTreeNode(Segment3DPersistenceTreeNode &b) : Segment3DTreeNode(b){
+
+    }
+
+    Segment3DPersistenceTreeNode(Segment3DTreeNode &b) : Segment3DTreeNode(b){
+
+    }
 
 
     /* 区间修改 */
 
-    StaticsType &__modifySegment(Segment3D segment,int diff,Segment3DPersistenceTreeNode** link){
+    StaticsType &__modifySegment(Segment3D segment,int diff,Segment3DPersistenceTreeNode**link){
 
         segment=segment.intersect(mySegment);
 
@@ -522,7 +518,7 @@ public:
             statics.clear();
             for(auto &i : son){
                 if(i){
-                    auto re=i->__modifySegment(segment,diff,&i);
+                    auto re=((Segment3DPersistenceTreeNode*)i)->__modifySegment(segment,diff,((Segment3DPersistenceTreeNode**)(&i)));
                     statics.update(re);
                 }
             }
@@ -533,7 +529,7 @@ public:
 
     /* 区间赋值 */
 
-    StaticsType &__setSegment(Segment3D segment,int val,Segment3DPersistenceTreeNode** link){
+    StaticsType &__setSegment(Segment3D segment,int val,Segment3DPersistenceTreeNode**link){
 
         segment=segment.intersect(mySegment);
 
@@ -563,7 +559,7 @@ public:
             statics.clear();
             for(auto &i:son){
                 if(i){
-                    auto re=i->__setSegment(segment,val,&i);
+                    auto re=((Segment3DPersistenceTreeNode*)i)->__setSegment(segment,val,((Segment3DPersistenceTreeNode**)(&i)));
                     statics.update(re);
                 }
             }
@@ -583,21 +579,27 @@ public:
 };
 
 
-class Segment3DPersistenceTree:public Segment3DTree{
+class Segment3DPersistenceTree{
 
-public:
+protected:
 
     list<Segment3DPersistenceTreeNode> heads;
     int count;
 
-    Segment3DPersistenceTree(int xLength,int yLength,int zLength):Segment3DTree(xLength,yLength,zLength){
+public:
+
+    int xLength;
+    int yLength;
+    int zLength;
+
+    Segment3DPersistenceTree(int xLength,int yLength,int zLength) : xLength(xLength),yLength(yLength),zLength(zLength){
         count=1;
-        heads.push_back(Segment3DPersistenceTreeNode(Segment3D(0,xLength,0,yLength,0,zLength)));
+        heads.emplace_back(Segment3D(0,xLength,0,yLength,0,zLength));
     }
 
     void createDuplicate(){
         auto temp=heads.back();
-        heads.push_back(temp);
+        heads.emplace_back(temp);
         count++;
     }
 
@@ -635,6 +637,7 @@ public:
     void setPoint(int x,int y,int z,int val){
         setSegment(Segment3D(x,y,z),val);
     } //Wrapper
+
 
 };
 
