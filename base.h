@@ -49,23 +49,19 @@ class ExtremeType{
 public:
 
     bool valid;
-    int index;
     int val;
 
-    ExtremeType() : index(0),val(0),valid(false){}
+    ExtremeType() : val(0),valid(false){}
 
-    ExtremeType(int v) : ExtremeType(0,v){}
-
-    ExtremeType(int i,int v) : index(i),val(v),valid(true){}
+    ExtremeType(int v) : val(v),valid(true){}
 
     ExtremeType &operator+(int v){
         val+=v;
         return *this;
     }
 
-    ExtremeType &operator+=(int v){
+    void operator+=(int v){
         val+=v;
-        return *this;
     }
 
     ExtremeType &operator-(int v){
@@ -73,9 +69,8 @@ public:
         return *this;
     }
 
-    ExtremeType &operator-=(int v){
+    void operator-=(int v){
         val-=v;
-        return *this;
     }
 
     ExtremeType &operator=(int v){
@@ -85,6 +80,7 @@ public:
 
     ExtremeType &operator=(ExtremeType v){
         val=v.val;
+        valid=v.valid;
         return *this;
     }
 

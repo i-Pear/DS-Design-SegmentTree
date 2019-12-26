@@ -178,7 +178,7 @@ public:
         setSegment(Segment3D(x,y,z),val);
     } //Wrapper
 
-    void DEBUG_Output_Sum_Process(Segment3D segment){
+    void debug_output_sum_process(Segment3D segment){
         for(int i=0;i<=count;i++){
             cout<<"Step "<<i<<" : "<<querySegmentSum(segment,i)<<endl;
         }
