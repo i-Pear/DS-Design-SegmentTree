@@ -29,6 +29,9 @@ protected:
             statics.max+=diff;
             return statics;
         }else{
+            if(ifSet){
+                pushDownDiff();
+            }
             statics.clear();
             for(auto &i : son){
                 if(i){
@@ -55,6 +58,7 @@ protected:
             cachedSet=val;
             statics.max=statics.min=val;
             statics.sum=val*mySegment.getVolume();
+            return statics;
         }else{
             if(cachedDiff){
                 pushDownDiff();
