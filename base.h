@@ -15,9 +15,13 @@ public:
             xL(x),xR(x+1),yL(y),yR(y+1),zL(z),zR(z+1),area((xR-xL)*(yR-yL)*(zR-zL)){}
 
     Segment3D intersect(const Segment3D &b){
-        return {max(xL,b.xL),min(xR,b.xR),
-                max(yL,b.yL),min(yR,b.yR),
-                max(zL,b.zL),min(zR,b.zR)};
+        Segment3D res={max(xL,b.xL),min(xR,b.xR),
+                    max(yL,b.yL),min(yR,b.yR),
+                    max(zL,b.zL),min(zR,b.zR)};
+        if(res.xR<res.xL||res.yR<res.yL||res.zR<res.zL){
+            return {0,0,0,0,0,0};
+        }
+        return res;
     }
 
     Segment3D &operator=(const Segment3D &b) = default;

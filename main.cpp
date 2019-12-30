@@ -3,13 +3,10 @@
 #include "SegmentPersistenceTree.h"
 
 
-int main(){
+int main(){ // 左闭右开
     Segment3DPersistenceTree t(4,4,4);
-    t.debug_output_sum_process(Segment3D(1,3,1,3,1,3));
-    t.modifySegment(Segment3D(1,2,1,3,1,2),10);
-    t.debug_output_sum_process(Segment3D(1,3,1,3,1,3));
-    t.setSegment(Segment3D(1,3,1,3,1,3),50);
-    t.debug_output_sum_process(Segment3D(1,3,1,3,1,3));
-    t.modifySegment(Segment3D(1,2,1,3,1,2),10);
-    t.debug_output_sum_process(Segment3D(1,3,1,3,1,3));
+    t.setSegment({0,3,0,3,0,3},10);
+    t.modifySegment({1,3,1,3,1,3},1);
+    t.modifySegment({0,2,0,2,0,2},-1);
+    t.debug_output_sum_process({0,3,0,3,0,3});
 }

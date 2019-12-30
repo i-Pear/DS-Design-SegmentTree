@@ -3,4 +3,4 @@ project(SegmentTree)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(SegmentTree main.cpp base.h SegmentTree.h SegmentPersistenceTree.h)
+add_executable(SegmentTree main.cpp base.h SegmentTree.h SegmentPersistenceTree.h SegmentPersistenceTree.cpp SegmentTree.cpp)
