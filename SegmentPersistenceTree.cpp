@@ -46,6 +46,7 @@ Segment3DPersistenceTreeNode::__modifySegment(Segment3D segment,int diff,Segment
                 statics.update(re);
             }
         }
+        statics.add(cachedDiff,mySegment.getVolume());
         return statics;
     }
 
@@ -88,6 +89,7 @@ StaticsType &Segment3DPersistenceTreeNode::__setSegment(Segment3D segment,int va
                 statics.update(re);
             }
         }
+        statics.add(cachedDiff,mySegment.getVolume());
         return statics;
     }
 }
@@ -139,7 +141,7 @@ int Segment3DPersistenceTree::queryPoint(int x,int y,int z,int time){
 } //Wrapper
 
 ExtremeType Segment3DPersistenceTree::querySegmentMin(Segment3D segment,int time){
-    cout<<"DEBUG::size="<<heads.size()<<endl;
+    //cout<<"DEBUG::size="<<heads.size()<<endl;
     auto iter=heads.begin();
     while(time--){
         iter++;

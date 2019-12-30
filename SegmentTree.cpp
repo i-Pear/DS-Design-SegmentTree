@@ -24,6 +24,7 @@ StaticsType &Segment3DTreeNode::__modifySegment(Segment3D segment,int diff){
                 statics.update(re);
             }
         }
+        statics.add(cachedDiff,mySegment.getVolume());
         return statics;
     }
 
@@ -55,6 +56,7 @@ StaticsType &Segment3DTreeNode::__setSegment(Segment3D segment,int val){
                 statics.update(re);
             }
         }
+        statics.add(cachedDiff,mySegment.getVolume());
         return statics;
     }
 }
@@ -188,24 +190,24 @@ ExtremeType Segment3DTreeNode::querySegmentMin(Segment3D segment){
     if(segment.empty())return {};
 
     if(ifSet){
-        return segment.getVolume()*cachedSet;
+        return (cachedSet+cachedDiff);
     }
 
     if(segment==mySegment){
         return statics.min;
     }
     ExtremeType res;
-    bool init=false;
     for(auto &i:son){
         if(i){
-            if(!init){
-                res=i->querySegmentMin(segment);
-                init=true;
-            }else{
-                res=std::min(res,i->querySegmentMin(segment));
+            auto re=i->querySegmentMin(segment);
+            if(!re.valid)continue;
+            if(!res.valid){
+                res=re;
             }
+            res.val=std::min(res.val,re.val);
         }
     }
+    res.val+=cachedDiff;
     return res;
 }
 
@@ -216,24 +218,24 @@ ExtremeType Segment3DTreeNode::querySegmentMax(Segment3D segment){
     if(segment.empty())return {};
 
     if(ifSet){
-        return segment.getVolume()*cachedSet;
+        return (cachedSet+cachedDiff);
     }
 
     if(segment==mySegment){
         return statics.max;
     }
     ExtremeType res;
-    bool init=false;
     for(auto &i:son){
         if(i){
-            if(!init){
-                res=i->querySegmentMax(segment);
-                init=true;
-            }else{
-                res=std::max(res,i->querySegmentMax(segment));
+            auto re=i->querySegmentMax(segment);
+            if(!re.valid)continue;
+            if(!res.valid){
+                res=re;
             }
+            res.val=std::max(res.val,re.val);
         }
     }
+    res.val+=cachedDiff;
     return res;
 }
 
