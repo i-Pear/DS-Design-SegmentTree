@@ -11,8 +11,8 @@
 Segment3DPersistenceTree* tree=nullptr;
 
 
-bool startWith(const string& a,const string& b){
-    return a==b.substr(0,a.length());
+bool startWith(const string& a,const string& pattern){
+    return pattern==a.substr(0,pattern.length());
 }
 
 
@@ -27,6 +27,11 @@ void parse(const string& str){
         iss>>x>>y>>z;
         tree=new Segment3DPersistenceTree(x,y,z);
         return;
+    }else{
+        if(tree==nullptr){
+            cout<<"Tree hasn't been initialized!"<<endl;
+            return;
+        }
     }
 
     // modify seg 1 2 1 2 1 2 5
@@ -107,10 +112,9 @@ void parse(const string& str){
         iss>>temp>>temp>>temp>>temp;
         iss>>xl>>xr>>yl>>yr>>zl>>zr;
         tree->debug_output_sum_process({xl,xr,yl,yr,zl,zr});
-        cout<<endl;
         return;
     }
-    
+
 }
 
 
