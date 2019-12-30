@@ -3,13 +3,103 @@
 #include "SegmentPersistenceTree.h"
 
 
-/*
- *             注意左闭右开
- * */
+/******************************************
+ *             注意左闭右开                *
+ ******************************************/
+
+
+Segment3DPersistenceTree* tree=nullptr;
+
+
+bool startWith(const string& a,const string& b){
+    return a==b.substr(0,a.length());
+}
 
 
 void parse(const string& str){
+    istringstream iss(str);
+    string temp;
 
+    // create tree 3 4 5
+    if(startWith(str,"create tree ")){
+        iss>>temp>>temp;
+        int x,y,z;
+        iss>>x>>y>>z;
+        tree=new Segment3DPersistenceTree(x,y,z);
+        return;
+    }
+
+    // modify seg 1 2 1 2 1 2 5
+    if(startWith(str,"modify seg ")){
+        int xl,xr,yl,yr,zl,zr,diff;
+        iss>>temp>>temp;
+        iss>>xl>>xr>>yl>>yr>>zl>>zr>>diff;
+        tree->modifySegment({xl,xr,yl,yr,zl,zr},diff);
+        return;
+    }
+
+    // modify point 1 2 3 5
+    if(startWith(str,"modify point ")){
+        int x,y,z,diff;
+        iss>>temp>>temp;
+        iss>>x>>y>>z>>diff;
+        tree->modifyPoint(x,y,z,diff);
+        return;
+    }
+
+    // set seg 1 2 1 2 1 2 5
+    if(startWith(str,"set seg ")){
+        int xl,xr,yl,yr,zl,zr,set;
+        iss>>temp>>temp;
+        iss>>xl>>xr>>yl>>yr>>zl>>zr>>set;
+        tree->setSegment({xl,xr,yl,yr,zl,zr},set);
+        return;
+    }
+
+    // set point 1 2 3 5
+    if(startWith(str,"set point ")){
+        int x,y,z,set;
+        iss>>temp>>temp;
+        iss>>x>>y>>z>>set;
+        tree->setPoint(x,y,z,set);
+        return;
+    }
+
+    // query seg sum 1 2 1 2 1 2 5
+    if(startWith(str,"query seg sum ")){
+        int xl,xr,yl,yr,zl,zr,t;
+        iss>>temp>>temp>>temp;
+        iss>>xl>>xr>>yl>>yr>>zl>>zr>>t;
+        cout<<tree->querySegmentSum({xl,xr,yl,yr,zl,zr},t)<<endl;
+        return;
+    }
+
+    // query seg min 1 2 1 2 1 2 5
+    if(startWith(str,"query seg min ")){
+        int xl,xr,yl,yr,zl,zr,t;
+        iss>>temp>>temp>>temp;
+        iss>>xl>>xr>>yl>>yr>>zl>>zr>>t;
+        cout<<tree->querySegmentMin({xl,xr,yl,yr,zl,zr},t).val<<endl;
+        return;
+    }
+
+    // query seg max 1 2 1 2 1 2 5
+    if(startWith(str,"query seg max ")){
+        int xl,xr,yl,yr,zl,zr,t;
+        iss>>temp>>temp>>temp;
+        iss>>xl>>xr>>yl>>yr>>zl>>zr>>t;
+        cout<<tree->querySegmentMax({xl,xr,yl,yr,zl,zr},t).val<<endl;
+        return;
+    }
+
+    // query point 1 2 3 8
+    if(startWith(str,"query point ")){
+        int x,y,z,t;
+        iss>>temp>>temp;
+        iss>>x>>y>>z>>t;
+        tree->queryPoint(x,y,z,t);
+        return;
+    }
 }
 
 
