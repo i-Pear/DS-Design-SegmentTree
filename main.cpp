@@ -4,9 +4,8 @@
 
 
 int main(){ // 左闭右开
-    Segment3DPersistenceTree t(4,4,4);
-    t.setSegment({0,3,0,3,0,3},10);
-    t.modifySegment({1,3,1,3,1,3},1);
-    t.modifySegment({0,2,0,2,0,2},-1);
-    t.debug_output_sum_process({0,3,0,3,0,3});
+    Segment3DTree t(10,1,1);
+    t.modifySegment({0,5,0,1,0,1},2);
+    t.modifySegment({1,6,0,1,0,1},-1);
+    cout<<t.querySegmentSum({0,10,0,1,0,1});
 }
