@@ -100,6 +100,17 @@ void parse(const string& str){
         tree->queryPoint(x,y,z,t);
         return;
     }
+
+    // show seg sum progress 1 2 1 2 1 2
+    if(startWith(str,"show seg sum progress ")){
+        int xl,xr,yl,yr,zl,zr;
+        iss>>temp>>temp>>temp>>temp;
+        iss>>xl>>xr>>yl>>yr>>zl>>zr;
+        tree->debug_output_sum_process({xl,xr,yl,yr,zl,zr});
+        cout<<endl;
+        return;
+    }
+    
 }
 
 
