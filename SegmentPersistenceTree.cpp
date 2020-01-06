@@ -77,6 +77,7 @@ StaticsType &Segment3DPersistenceTreeNode::__setSegment(Segment3D segment,int va
         cachedSet=val;
         statics.max=statics.min=val;
         statics.sum=val*mySegment.getVolume();
+        return statics;
     }else{
         if(cachedDiff){
             pushDownDiff();

@@ -41,11 +41,11 @@ private:
 
     void createDuplicate();
 
+public:
+
     int xLength;
     int yLength;
     int zLength;
-
-public:
 
     Segment3DPersistenceTree(int xLength,int yLength,int zLength);
 

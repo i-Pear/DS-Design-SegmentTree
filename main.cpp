@@ -39,6 +39,9 @@ void parse(const string& str){
         int xl,xr,yl,yr,zl,zr,diff;
         iss>>temp>>temp;
         iss>>xl>>xr>>yl>>yr>>zl>>zr>>diff;
+        if(xl>=tree->xLength||xr>tree->xLength)throw 1;
+        if(yl>=tree->yLength||yr>tree->yLength)throw 1;
+        if(zl>=tree->zLength||zr>tree->zLength)throw 1;
         tree->modifySegment({xl,xr,yl,yr,zl,zr},diff);
         return;
     }
@@ -48,6 +51,9 @@ void parse(const string& str){
         int x,y,z,diff;
         iss>>temp>>temp;
         iss>>x>>y>>z>>diff;
+        if(x>=tree->xLength)throw 1;
+        if(y>=tree->yLength)throw 1;
+        if(z>=tree->zLength)throw 1;
         tree->modifyPoint(x,y,z,diff);
         return;
     }
@@ -57,6 +63,9 @@ void parse(const string& str){
         int xl,xr,yl,yr,zl,zr,set;
         iss>>temp>>temp;
         iss>>xl>>xr>>yl>>yr>>zl>>zr>>set;
+        if(xl>=tree->xLength||xr>tree->xLength)throw 1;
+        if(yl>=tree->yLength||yr>tree->yLength)throw 1;
+        if(zl>=tree->zLength||zr>tree->zLength)throw 1;
         tree->setSegment({xl,xr,yl,yr,zl,zr},set);
         return;
     }
@@ -66,6 +75,9 @@ void parse(const string& str){
         int x,y,z,set;
         iss>>temp>>temp;
         iss>>x>>y>>z>>set;
+        if(x>=tree->xLength)throw 1;
+        if(y>=tree->yLength)throw 1;
+        if(z>=tree->zLength)throw 1;
         tree->setPoint(x,y,z,set);
         return;
     }
@@ -75,6 +87,9 @@ void parse(const string& str){
         int xl,xr,yl,yr,zl,zr,t;
         iss>>temp>>temp>>temp;
         iss>>xl>>xr>>yl>>yr>>zl>>zr>>t;
+        if(xl>=tree->xLength||xr>tree->xLength)throw 1;
+        if(yl>=tree->yLength||yr>tree->yLength)throw 1;
+        if(zl>=tree->zLength||zr>tree->zLength)throw 1;
         cout<<tree->querySegmentSum({xl,xr,yl,yr,zl,zr},t)<<endl;
         return;
     }
@@ -84,6 +99,9 @@ void parse(const string& str){
         int xl,xr,yl,yr,zl,zr,t;
         iss>>temp>>temp>>temp;
         iss>>xl>>xr>>yl>>yr>>zl>>zr>>t;
+        if(xl>=tree->xLength||xr>tree->xLength)throw 1;
+        if(yl>=tree->yLength||yr>tree->yLength)throw 1;
+        if(zl>=tree->zLength||zr>tree->zLength)throw 1;
         cout<<tree->querySegmentMin({xl,xr,yl,yr,zl,zr},t).val<<endl;
         return;
     }
@@ -93,6 +111,9 @@ void parse(const string& str){
         int xl,xr,yl,yr,zl,zr,t;
         iss>>temp>>temp>>temp;
         iss>>xl>>xr>>yl>>yr>>zl>>zr>>t;
+        if(xl>=tree->xLength||xr>tree->xLength)throw 1;
+        if(yl>=tree->yLength||yr>tree->yLength)throw 1;
+        if(zl>=tree->zLength||zr>tree->zLength)throw 1;
         cout<<tree->querySegmentMax({xl,xr,yl,yr,zl,zr},t).val<<endl;
         return;
     }
@@ -102,7 +123,10 @@ void parse(const string& str){
         int x,y,z,t;
         iss>>temp>>temp;
         iss>>x>>y>>z>>t;
-        tree->queryPoint(x,y,z,t);
+        if(x>=tree->xLength)throw 1;
+        if(y>=tree->yLength)throw 1;
+        if(z>=tree->zLength)throw 1;
+        cout<<tree->queryPoint(x,y,z,t)<<endl;
         return;
     }
 
@@ -111,9 +135,14 @@ void parse(const string& str){
         int xl,xr,yl,yr,zl,zr;
         iss>>temp>>temp>>temp>>temp;
         iss>>xl>>xr>>yl>>yr>>zl>>zr;
+        if(xl>=tree->xLength||xr>tree->xLength)throw 1;
+        if(yl>=tree->yLength||yr>tree->yLength)throw 1;
+        if(zl>=tree->zLength||zr>tree->zLength)throw 1;
         tree->debug_output_sum_process({xl,xr,yl,yr,zl,zr});
         return;
     }
+
+    cout<<" ! Argument ERROR"<<endl;
 
 }
 
